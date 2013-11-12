@@ -371,7 +371,7 @@ if has('gui_running')
     set guioptions-=r " Remove the scrollbar
     set lines=40 " 40 lines of text instead of 24
     if has("gui_gtk2")
-        set guifont=Monaco\ for\ Powerline:h14
+        set guifont=Monaco\ for\ Powerline\ 12
     elseif has("gui_macvim")
         set guifont=Monaco\ for\ Powerline:h14
     elseif has("gui_win32")
