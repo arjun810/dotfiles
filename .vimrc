@@ -27,7 +27,10 @@ Bundle 'airblade/vim-gitgutter'
 Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'godlygeek/tabular'
-Bundle 'klen/python-mode'
+
+" TODO potentially use, settings below
+" Bundle 'klen/python-mode'
+
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'pangloss/vim-javascript'
 Bundle 'elzr/vim-json'
@@ -150,7 +153,7 @@ set linespace=0                " No extra spaces between rows
 set nu                         " Line numbers on
 set showmatch                  " Show matching brackets/parenthesis
 set incsearch                  " Find as you type search
-set hlsearch                   " Highlight search terms
+set nohlsearch                 " Highlight search terms
 set winminheight=0             " Windows can be 0 line high
 set ignorecase                 " Case insensitive search
 set smartcase                  " Case sensitive when uc present
@@ -249,7 +252,7 @@ nmap <leader>f8 :set foldlevel=8<CR>
 nmap <leader>f9 :set foldlevel=9<CR>
 
 " Toggle search highlighting
-nmap <silent> <leader>/ :nohlsearch<CR>
+nmap <silent> <leader>/ :set invhlsearch<CR>
 
 " Find merge conflict markers
 map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
@@ -308,9 +311,9 @@ vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
 nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
 
 " PyMode TODO figure out whether to use, from spf13
-let g:pymode_lint_checker = "pyflakes"
-let g:pymode_utils_whitespaces = 0
-let g:pymode_options = 0
+" let g:pymode_lint_checker = "pyflakes"
+" let g:pymode_utils_whitespaces = 0
+" let g:pymode_options = 0
 
 " ctrlp
 let g:ctrlp_working_path_mode = 'ra'
@@ -343,6 +346,9 @@ nnoremap <silent> <leader>gr :Gread<CR>:GitGutter<CR>
 nnoremap <silent> <leader>gw :Gwrite<CR>:GitGutter<CR>
 nnoremap <silent> <leader>ge :Gedit<CR>
 nnoremap <silent> <leader>gg :GitGutterToggle<CR>
+
+" gitgutter
+let g:gitgutter_sign_column_always = 1
 
 " UndoTree
 nnoremap <Leader>u :UndotreeToggle<CR>
