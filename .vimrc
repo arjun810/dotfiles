@@ -13,8 +13,9 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'mileszs/ack.vim'
 Bundle 'kien/ctrlp.vim'
-Bundle 'Valloric/YouCompleteMe'
-"Bundle 'ervandew/supertab.git'
+"Bundle 'Valloric/YouCompleteMe'
+Bundle 'ervandew/supertab.git'
+Bundle 'davidhalter/jedi-vim.git'
 
 Bundle 'skammer/vim-css-color'
 
