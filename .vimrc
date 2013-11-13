@@ -13,7 +13,8 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'mileszs/ack.vim'
 Bundle 'kien/ctrlp.vim'
-Bundle 'ervandew/supertab.git'
+Bundle 'Valloric/YouCompleteMe'
+"Bundle 'ervandew/supertab.git'
 
 
 " TODO potentially remove
@@ -390,7 +391,6 @@ else
     if &term == 'xterm' || &term == 'screen'
         set t_Co=256 " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
     endif
- term=builtin_ansi " Make arrow and other keys work
 endif
 
 " Run a shell command
