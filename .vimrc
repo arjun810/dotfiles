@@ -16,6 +16,7 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'Valloric/YouCompleteMe'
 "Bundle 'ervandew/supertab.git'
 
+Bundle 'skammer/vim-css-color'
 
 " TODO potentially remove
 Bundle 'terryma/vim-multiple-cursors'
