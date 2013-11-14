@@ -321,7 +321,7 @@ nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
 " ctrlp
 let g:ctrlp_working_path_mode = 'ra'
 nnoremap <silent> <Leader>t :CtrlP<CR>
-nnoremap <silent> <Leader>r :CtrlPMRU<CR>
+nnoremap <silent> <Leader>y :CtrlPMRU<CR>
 nnoremap <silent> <Leader>b :CtrlPBuffer<CR>
 nnoremap <silent> <Leader>f :ClearCtrlPCache<CR>
 
