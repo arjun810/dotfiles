@@ -30,6 +30,7 @@ plugins=(git autojump)
 case "$PLATFORM" in
     Darwin)
         plugins+=(brew)
+        export PATH=~/bin/git-annex:$PATH
 	mailer_bin=mail
         ;;
     Linux)
@@ -71,3 +72,10 @@ if [[ $platform = "Linux" ]]; then
 fi
 
 export PATH=~/bin:/usr/local/bin:$PATH
+
+function viewpcd(){
+    if [[ ! -e $1:r.ply ]]; then
+        pcl_pcd2ply $1 $1:r.ply
+    fi
+    meshlab $1:r.ply
+}
