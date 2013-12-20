@@ -71,7 +71,7 @@ if [[ $platform = "Linux" ]]; then
     source /opt/intel/bin/iccvars.sh intel64 
 fi
 
-export PATH=~/bin:/usr/local/bin:$PATH
+export PATH=~/bin:/usr/local/bin:/usr/sbin:$PATH
 
 function viewpcd(){
     if [[ ! -e $1:r.ply ]]; then
