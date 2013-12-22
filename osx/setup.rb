@@ -39,6 +39,15 @@ def cask(cask_name)
     system command
 end
 
+def clone(repo, destination)
+    if repo.include? ":"
+        command = "git clone #{repo} #{destination}"
+    else
+        command = "git clone git@github.com:#{repo} #{destination}"
+    end
+    system command
+end
+
 def brew(packages, opts={})
     packages = [packages].flatten
     command = "brew install #{packages.join(" ")}"
@@ -357,6 +366,38 @@ end
 
 step "Link pcl_viewer" do
     command "ln -s /usr/local/Cellar/pcl/HEAD/bin/pcl_viewer.app/Contents/MacOS/pcl_viewer /usr/local/bin/pcl_viewer"
+end
+
+step "Make berkeley/v" do
+    command "mkdir -p ~/Documents/berkeley/v"
+end
+
+step "Clone cyres" do
+    clone "rll/cyres", "~/Documents/berkeley/v/cyres"
+end
+
+step "Install cyres" do
+    command "cd ~/Documents/berkeley/v/cyres && python setup.py install"
+end
+
+step "Clone cycloud" do
+    clone "rll/cycloud", "~/Documents/berkeley/v/cycloud"
+end
+
+step "Install cycloud" do
+    command "cd ~/Documents/berkeley/v/cycloud && python setup.py install"
+end
+
+step "Clone pycb" do
+    clone "rll/pycb", "~/Documents/berkeley/v/pycb"
+end
+
+step "Install pycb" do
+    command "cd ~/Documents/berkeley/v/pycb && python setup.py install"
+end
+
+step "Clone perception" do
+    clone "rll/perception", "~/Documents/berkeley/v/perception"
 end
 
 $notes.each do |note|
