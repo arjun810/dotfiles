@@ -1,5 +1,7 @@
 PLATFORM=`uname`
 
+export PATH=~/bin:/usr/local/bin:/usr/sbin:$PATH
+
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
@@ -31,12 +33,12 @@ case "$PLATFORM" in
     Darwin)
         plugins+=(brew)
         export PATH=~/bin/git-annex:$PATH
-	mailer_bin=mail
+        mailer_bin=mail
         ;;
     Linux)
-	mailer_bin=mutt
-	alias pbcopy='xclip -selection clipboard'
-	alias pbpaste='xclip -selection clipboard -o'
+        mailer_bin=mutt
+        alias pbcopy='xclip -selection clipboard'
+        alias pbpaste='xclip -selection clipboard -o'
         ;;
 esac
 
@@ -70,8 +72,6 @@ if [[ $platform = "Linux" ]]; then
     source /opt/intel/bin/compilervars.sh intel64
     source /opt/intel/bin/iccvars.sh intel64 
 fi
-
-export PATH=~/bin:/usr/local/bin:/usr/sbin:$PATH
 
 function viewpcd(){
     if [[ ! -e $1:r.ply ]]; then
