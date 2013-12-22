@@ -166,6 +166,10 @@ step "Install autojump" do
     brew "autojump"
 end
 
+step "Install git-annex" do
+    cask "git-annex"
+end
+
 step "Install unrar" do
     brew "unrar"
 end

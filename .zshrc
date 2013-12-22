@@ -32,7 +32,7 @@ plugins=(git autojump)
 case "$PLATFORM" in
     Darwin)
         plugins+=(brew)
-        export PATH=~/bin/git-annex:$PATH
+        export PATH=/opt/homebrew-cask/Caskroom/git-annex/latest/git-annex.app/Contents/MacOS:$PATH
         mailer_bin=mail
         ;;
     Linux)
