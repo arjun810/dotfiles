@@ -13,6 +13,8 @@ def step(name)
     if $completed.include? name
         puts "Step '#{name}' already done; skipping."
         return
+    else
+        puts "Starting step '#{name}.'"
     end
     success = yield
     if success
@@ -70,6 +72,12 @@ def pip(packages, opts={})
     system command
 end
 
+def gem(packages, opts={})
+    packages = [packages].flatten
+    command = "gem install #{packages.join(" ")}"
+    system command
+end
+
 def prompt(message)
     puts message
     puts "Hit enter to continue."
@@ -102,11 +110,9 @@ step "Link .theanorc" do
     command "ln -s ~/.dotfiles/osx/.theanorc ~/.theanorc"
 end
 
-# Install pcre separately because we want to use gcc-4.8 for it, since other
-# formulas in the future are likely to depend on pcre. We need to install this
-# before zsh because zsh depends on pcre.
-step "Install pcre" do
-    brew 'pcre', cc: "gcc-4.8"
+# .amethyst has to be done manually since it's osx specific
+step "Link .amethyst" do
+    command "ln -s ~/.dotfiles/osx/.amethyst ~/.amethyst"
 end
 
 step "Install zsh" do
@@ -150,12 +156,23 @@ step "Install MacVim" do
     cask "macvim"
 end
 
+step "Install amethyst" do
+    note "You'll need to set up the privacy accessibility settings for Amethyst
+    after starting it for the first time. You'll also need to set up spaces
+    support as described at https://github.com/ianyh/Amethyst"
+    cask "amethyst"
+end
+
 step "Install Chrome" do
     cask "google-chrome"
 end
 
 step "Install Firefox" do
     cask "firefox"
+end
+
+step "Install java" do
+    cask "java"
 end
 
 step "Install Alfred" do
@@ -173,6 +190,14 @@ end
 
 step "Install autojump" do
     brew "autojump"
+end
+
+step "Install aria2" do
+    brew "aria2"
+end
+
+step "Install xquartz" do
+    cask "xquartz"
 end
 
 step "Install git-annex" do
@@ -207,6 +232,10 @@ step "Install Vagrant" do
     cask "vagrant"
 end
 
+step "Get image for precise64 virtualbox" do
+    system "vagrant box add precise64 http://files.vagrantup.com/precise64.box"
+end
+
 step "Install Tunnelblick" do
     note "Don't forget to set up tunnelblick connections"
     cask "tunnelblick"
@@ -220,12 +249,21 @@ step "Install meshlab" do
     cask "meshlab"
 end
 
+step "Link meshlab bins" do
+  system "ln -s /opt/homebrew-cask/Caskroom/meshlab/*/meshlab.app/Contents/MacOS/meshlab ~/bin/meshlab"
+  system "ln -s /opt/homebrew-cask/Caskroom/meshlab/*/meshlab.app/Contents/MacOS/meshlabserver ~/bin/meshlabserver"
+end
+
 step "Install Google Voice/Video plugin" do
     cask "google-hangouts"
 end
 
 step "Install Flash" do
     cask "flash"
+end
+
+step "Install omnigraffle" do
+  cask "omnigraffle"
 end
 
 step "Tap homebrew/versions for gcc" do
@@ -244,8 +282,16 @@ step "Install gcc" do
     brew "gcc48"
 end
 
-step "Link gcc and g++" do
-    command "ln -s /usr/local/bin/{gcc-4.8,gcc} && ln -s /usr/local/bin/{g++-4.8,g++}"
+step "Tap arjun810/openmp" do
+    command "brew tap arjun810/openmp && brew update"
+end
+
+step "Install OpenMP Runtime" do
+    brew "openmp-rt", flags: "--debug"
+end
+
+step "Install clang with OpenMP" do
+    brew "llvm-omp", flags: "--HEAD"
 end
 
 step "Install cmake" do
@@ -253,35 +299,32 @@ step "Install cmake" do
 end
 
 step "Install Ceres dependency gflags" do
-    brew "gflags", cc: "gcc-4.8"
+    brew "gflags"
 end
 
 step "Install Ceres dependency glog" do
-    brew "glog", cc: "gcc-4.8"
+    brew "glog"
 end
 
 step "Tap homebrew/science" do
     command "brew tap homebrew/science"
 end
 
-# WARNING: This relies on a custom version of the tbb formula, which I've
-# submitted as a pull request to homebrew.
 step "Install Ceres dependency suite-sparse" do
-    prompt "Ensure that you're using the modified tbb formula that enables
-    gcc-4.8, or that this has been merged into homebrew."
-    brew "suite-sparse", cc: "gcc-4.8"
+    brew "suite-sparse"
 end
 
 step "Install Ceres dependency eigen" do
-    brew "eigen", cc: "gcc-4.8"
+    brew "eigen"
 end
 
 step "Install Ceres" do
-    brew "ceres-solver", cc: "gcc-4.8"
+    brew "ceres-solver"
+    #brew "arjun810/openmp/ceres-solver"
 end
 
 step "Install python" do
-    brew "python", cc: "gcc-4.8"
+    brew "python"
 end
 
 step "Upgrade setuptools and pip" do
@@ -289,9 +332,6 @@ step "Upgrade setuptools and pip" do
 end
 
 step "Install qt" do
-    note "Using clang for qt. This means that there may be future troubles
-    linking against it. If so, when trying to get it to work with gcc, patch to
-    remove the incompatible flags and see what happens."
     brew "qt"
 end
 
@@ -309,6 +349,8 @@ end
 
 step "Install ipython" do
     pip "ipython[zmq,qtconsole,notebook,test]"
+    # Don't think qtconsole will work because of nonsense with libstdc++
+    #pip "ipython[zmq,notebook,test]"
 end
 
 step "Tap samueljohn/python" do
@@ -316,7 +358,23 @@ step "Tap samueljohn/python" do
 end
 
 step "Install numpy and scipy" do
-    brew ["numpy", "scipy"], cc: "gcc-4.8"
+    brew ["numpy", "scipy"]
+end
+
+step "Install freetype" do
+    brew "freetype"
+end
+
+step "Install pillow" do
+    brew "pillow"
+end
+
+step "Install matplotlib dependencies: pyparsing python-dateutil" do
+    pip "pyparsing python-dateutil"
+end
+
+step "Install matplotlib" do
+    pip "matplotlib"
 end
 
 step "Install theano" do
@@ -327,10 +385,19 @@ step "Install cython" do
     pip "cython"
 end
 
+step "Install pyyaml" do
+    pip "pyyaml"
+end
+
+step "Install hdf5" do
+  brew "hdf5", flags: "--enable-cxx"
+end
+
+step "Install h5py" do
+    pip "h5py"
+end
+
 step "Install opencv" do
-    note "Using clang for opencv. This means that there may be future troubles
-    linking against it. If so, when trying to get it to work with gcc, may need
-    to disable QtKit (and video altogether) with a patch."
     brew "opencv", flags: ["--with-qt"]
 end
 
@@ -340,28 +407,22 @@ step "Tap homebrew-cv" do
     command "brew tap fran6co/cv"
 end
 
-# For PCL.
-step "Install libusb" do
-    note "Using clang for libusb. This means that there may be future troubles
-    linking against it. Couldn't easily get it to build with gcc."
-    brew "libusb"
-end
-
 step "Install vtk5" do
     note "Using vtk5 for PCL. PCL will soon be updated for VTK6, so you may
     want to reinstall at that point."
-    brew "vtk5", cc: "gcc-4.8", flags: ["--with-python", '-v', '--debug']
+    brew "vtk5", flags: ["--with-python", "--with-qt"]
 end
 
 step "Install boost" do
-    brew "boost", cc: "gcc-4.8", flags: ["--build-from-source"]
+    brew "boost"
+end
+
+step "Install flann" do
+  brew "flann", flags: "--enable-python"
 end
 
 step "Install pcl" do
-    prompt "PCL is being installed with debug enabled, because you'll need to
-    accept that it's being linked against a Clang-based qt even though we're
-    installing it with gcc."
-    brew "pcl", cc: "gcc-4.8", flags: ["--HEAD", '--debug']
+    brew "pcl", flags: ["--HEAD", '--debug']
 end
 
 step "Link pcl_viewer" do
@@ -398,6 +459,41 @@ end
 
 step "Clone perception" do
     clone "rll/perception", "~/Documents/berkeley/v/perception"
+end
+
+step "Install chruby" do
+    brew "chruby"
+end
+
+step "Install ruby-build" do
+    brew "ruby-build"
+end
+
+step "Make /opt/rubies" do
+    prompt "You'll need to enter your sudo password"
+    command "sudo mkdir /opt/rubies"
+    command "sudo chown arjun:staff /opt/rubies"
+end
+
+step "Install ruby 2.1.0" do
+    prompt "You may want to see if there's a new ruby version available before installing 2.1.0."
+    system "ruby-build 2.1.0 /opt/rubies/2.1.0"
+end
+
+step "Ensure chruby is sourced properly in your .zshrc" do
+    prompt "In order for 'gem' to work properly, make sure .zshrc is sourcing chruby."
+end
+
+step "Install bundler" do
+  gem "bundler"
+end
+
+step "Install ansible" do
+    brew "ansible"
+end
+
+step "Prompt about growl" do
+    prompt "Install growl from the App Store."
 end
 
 $notes.each do |note|

@@ -32,7 +32,7 @@ plugins=(git autojump)
 case "$PLATFORM" in
     Darwin)
         plugins+=(brew)
-        export PATH=/opt/homebrew-cask/Caskroom/git-annex/latest/git-annex.app/Contents/MacOS:$PATH
+        export PATH=/opt/homebrew-cask/Caskroom/git-annex/latest/git-annex.app/Contents/MacOS:/usr/texbin:$PATH
         mailer_bin=mail
         ;;
     Linux)
@@ -65,6 +65,7 @@ function textme() {
 }
 
 alias cmb='cd build; cmake ..; make; cd ..'
+alias ompcmb='cd build; CXX=clang-omp CC=clang-omp cmake ..; make; cd ..'
 
 # MKL stuff on linux
 if [[ $platform = "Linux" ]]; then
@@ -79,3 +80,11 @@ function viewpcd(){
     fi
     meshlab $1:r.ply
 }
+
+export HOMEBREW_GITHUB_API_TOKEN=d74a486aa9a339c2c3551e8eb8c0cb282b256ab0
+
+if [[ -e /usr/local/share/chruby/chruby.sh ]]; then
+    source /usr/local/share/chruby/chruby.sh
+    source /usr/local/share/chruby/auto.sh
+    chruby 2.1.0
+fi

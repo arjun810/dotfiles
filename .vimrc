@@ -40,6 +40,10 @@ Bundle 'elzr/vim-json'
 Bundle 'amirh/HTML-AutoCloseTag'
 Bundle 'hail2u/vim-css3-syntax'
 Bundle 'tpope/vim-haml'
+Bundle 'chase/vim-ansible-yaml'
+
+" May need to use classic vim-latex-suite as this is a fork
+Bundle 'gerw/vim-latex-suite'
 
 set background=dark
 colorscheme paintbox
@@ -194,6 +198,11 @@ autocmd FileType go autocmd BufWritePre <buffer> Fmt
 " set it to the first line when editing a git commit message
 au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
+au FileType yaml setl sw=2 sts=2 et
+au FileType ruby setl sw=2 sts=2 et
+au FileType coffee setl sw=2 sts=2 et
+au FileType sass setl sw=2 sts=2 et
+
 " Remove trailing whitespaces and ^M chars in programs
 function! StripTrailingWhitespace()
     " Preparation: save last search, and cursor position.
@@ -206,7 +215,7 @@ function! StripTrailingWhitespace()
     let @/=_s
     call cursor(l, c)
 endfunction
-autocmd FileType c,cpp,java,go,php,ruby,javascript,python,haml,xml,yml,coffee autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+"autocmd FileType c,cpp,java,go,php,ruby,javascript,python,haml,xml,yml,coffee autocmd BufWritePre <buffer> call StripTrailingWhitespace()
 
 let mapleader = '\'
 
@@ -394,6 +403,13 @@ else
         set t_Co=256 " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
     endif
 endif
+
+let g:tex_flavor = 'latex'
+let g:Tex_MultipleCompileFormat = 'pdf,aux'
+let g:Tex_TreatMacViewerAsUNIX = 0
+let g:Tex_DefaultTargetFormat = 'pdf'
+let g:Tex_CompileRule_pdf = 'pdflatex -synctex=1 --interaction=nonstopmode $*'
+let g:Tex_ViewRule_pdf = 'Skim'
 
 " Run a shell command
 function! s:RunShellCommand(cmdline)
