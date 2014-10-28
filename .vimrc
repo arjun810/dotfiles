@@ -40,6 +40,9 @@ Bundle 'elzr/vim-json'
 Bundle 'amirh/HTML-AutoCloseTag'
 Bundle 'hail2u/vim-css3-syntax'
 Bundle 'tpope/vim-haml'
+Bundle 'slim-template/vim-slim.git'
+Bundle 'tpope/vim-rails.git'
+Bundle 'tpope/vim-bundler.git'
 Bundle 'chase/vim-ansible-yaml'
 
 " May need to use classic vim-latex-suite as this is a fork

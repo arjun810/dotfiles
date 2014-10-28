@@ -171,6 +171,10 @@ step "Install Firefox" do
     cask "firefox"
 end
 
+step "Install silverlight" do
+    cask "silverlight"
+end
+
 step "Install java" do
     cask "java"
 end
@@ -365,6 +369,11 @@ step "Install freetype" do
     brew "freetype"
 end
 
+step "Link freetype2 to freetype" do
+  note "Symlinking freetype2 to freetype for matplotlib. May want to remove this later."
+  command "ln -s /usr/local/include/freetype2 /usr/local/include/freetype"
+end
+
 step "Install pillow" do
     brew "pillow"
 end
@@ -395,6 +404,14 @@ end
 
 step "Install h5py" do
     pip "h5py"
+end
+
+step "Install nose, nosy, nosegrowlnotify" do
+    pip ["nose", "nosy", "nosegrowlnotify"]
+end
+
+step "Install nose-parameterized" do
+    pip "nose-parameterized"
 end
 
 step "Install opencv" do
@@ -459,6 +476,19 @@ end
 
 step "Clone perception" do
     clone "rll/perception", "~/Documents/berkeley/v/perception"
+end
+
+# Needed for julia
+step "Install gfortran" do
+  brew "gfortran"
+end
+
+step "Tap staticfloat/julia" do
+    command "brew tap staticfloat/julia && brew update"
+end
+
+step "Install julia" do
+  brew "julia", flags: "--with-accelerate"
 end
 
 step "Install chruby" do

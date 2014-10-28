@@ -75,7 +75,7 @@ if [[ $platform = "Linux" ]]; then
 fi
 
 function viewpcd(){
-    if [[ ! -e $1:r.ply ]]; then
+    if [[ -e $1:r.pcd ]]; then
         pcl_pcd2ply $1 $1:r.ply
     fi
     meshlab $1:r.ply
