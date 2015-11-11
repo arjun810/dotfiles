@@ -86,5 +86,9 @@ export HOMEBREW_GITHUB_API_TOKEN=d74a486aa9a339c2c3551e8eb8c0cb282b256ab0
 if [[ -e /usr/local/share/chruby/chruby.sh ]]; then
     source /usr/local/share/chruby/chruby.sh
     source /usr/local/share/chruby/auto.sh
-    chruby 2.1.0
+    chruby 2.1.5
+fi
+
+if type hub > /dev/null; then
+    alias git=hub
 fi

@@ -5,53 +5,60 @@ set nocompatible  " Must be first line
 " Set up Vundle
 filetype on
 filetype off
-set rtp+=~/.vim/bundle/vundle
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
-Bundle 'flazz/vim-colorschemes'
-Bundle 'tpope/vim-fugitive'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'mileszs/ack.vim'
-Bundle 'kien/ctrlp.vim'
-"Bundle 'Valloric/YouCompleteMe'
-Bundle 'ervandew/supertab.git'
-Bundle 'davidhalter/jedi-vim.git'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'tpope/vim-fugitive'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'mileszs/ack.vim'
+Plugin 'kien/ctrlp.vim'
+"Plugin 'Valloric/YouCompleteMe'
+Plugin 'ervandew/supertab.git'
+Plugin 'davidhalter/jedi-vim.git'
 
-Bundle 'skammer/vim-css-color'
+Plugin 'skammer/vim-css-color'
 
 " TODO potentially remove
-Bundle 'terryma/vim-multiple-cursors'
+Plugin 'terryma/vim-multiple-cursors'
 
-Bundle 'Lokaltog/powerline', {'rtp':'/powerline/bindings/vim'}
-Bundle 'godlygeek/csapprox'
-Bundle 'mbbill/undotree'
-Bundle 'nathanaelkane/vim-indent-guides'
-Bundle 'airblade/vim-gitgutter'
-Bundle 'scrooloose/syntastic'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'godlygeek/tabular'
+"Plugin 'Lokaltog/powerline', {'rtp':'/powerline/bindings/vim'}
+Plugin 'bling/vim-airline'
+Plugin 'godlygeek/csapprox'
+Plugin 'mbbill/undotree'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'scrooloose/syntastic'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'godlygeek/tabular'
+Plugin 'zerowidth/vim-copy-as-rtf'
+
 
 " TODO potentially use, settings below
-" Bundle 'klen/python-mode'
+" Plugin 'klen/python-mode'
 
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'pangloss/vim-javascript'
-Bundle 'elzr/vim-json'
-Bundle 'amirh/HTML-AutoCloseTag'
-Bundle 'hail2u/vim-css3-syntax'
-Bundle 'tpope/vim-haml'
-Bundle 'slim-template/vim-slim.git'
-Bundle 'tpope/vim-rails.git'
-Bundle 'tpope/vim-bundler.git'
-Bundle 'chase/vim-ansible-yaml'
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'pangloss/vim-javascript'
+Plugin 'elzr/vim-json'
+Plugin 'amirh/HTML-AutoCloseTag'
+Plugin 'hail2u/vim-css3-syntax'
+Plugin 'tpope/vim-haml'
+Plugin 'slim-template/vim-slim.git'
+Plugin 'tpope/vim-rails.git'
+Plugin 'vim-ruby/vim-ruby.git'
+Plugin 'tpope/vim-bundler.git'
+Plugin 'chase/vim-ansible-yaml'
 
 " May need to use classic vim-latex-suite as this is a fork
-Bundle 'gerw/vim-latex-suite'
+Plugin 'gerw/vim-latex-suite'
+
+Plugin 'freitass/todo.txt-vim'
+call vundle#end()
+filetype plugin indent on " Automatically detect file types.
 
 set background=dark
 colorscheme paintbox
 
-filetype plugin indent on " Automatically detect file types.
 syntax on                 " Syntax highlighting
 set mouse=a               " Automatically enable mouse usage
 set mousehide             " Hide the mouse cursor while typing
@@ -134,9 +141,9 @@ set showmode   " Display the current mode
 set cursorline " Highlight current line
 
 " SignColumn should match background for things like vim-gitgutter
-highlight clear SignColumn 
+highlight clear SignColumn
 
-" Current line number row will have same background olor 
+" Current line number row will have same background color
 " in relative mode. Things like vim-gitgutter will match LineNr highlight
 highlight clear LineNr
 
@@ -203,6 +210,7 @@ au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
 au FileType yaml setl sw=2 sts=2 et
 au FileType ruby setl sw=2 sts=2 et
+au FileType slim setl sw=2 sts=2 et
 au FileType coffee setl sw=2 sts=2 et
 au FileType sass setl sw=2 sts=2 et
 
@@ -339,7 +347,7 @@ nnoremap <silent> <Leader>f :ClearCtrlPCache<CR>
 
 let g:ctrlp_custom_ignore = {
     \ 'dir': '\.git$\|\.hg$\|\.svn$',
-    \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' 
+    \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$'
 \ }
 
 let g:ctrlp_user_command = {
@@ -376,7 +384,19 @@ let g:indent_guides_guide_size = 1
 let g:indent_guides_enable_on_vim_startup = 1
 
 " vim-airline
-let g:airline_theme = 'powerlineish'
+let g:airline_theme = 'murmur'
+let g:airline_enable_branch     = 1
+let g:airline_enable_syntastic  = 1
+
+" vim-powerline symbols
+let g:airline_powerline_fonts = 1
+"let g:airline_left_sep          = '⮀'
+"let g:airline_left_alt_sep      = '⮁'
+"let g:airline_right_sep         = '⮂'
+"let g:airline_right_alt_sep     = '⮃'
+"let g:airline_branch_prefix     = '⭠'
+"let g:airline_readonly_symbol   = '⭤'
+"let g:airline_linecolumn_prefix = '⭡'
 
 " ack
 if executable('ack')
@@ -435,3 +455,7 @@ endfunction
 
 command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
 " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
+
+
+" Ruby
+let g:ruby_indent_access_modifier_style="indent"
