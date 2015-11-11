@@ -1,3 +1,6 @@
+RESEARCH = false
+JULIA = false
+
 $steps_filename = File.expand_path "~/.setup_steps"
 if File.file? $steps_filename
     File.open($steps_filename, 'r') do |f|
@@ -200,12 +203,10 @@ step "Install aria2" do
     brew "aria2"
 end
 
-step "Install xquartz" do
-    cask "xquartz"
-end
-
-step "Install git-annex" do
-    cask "git-annex"
+if RESEARCH
+  step "Install xquartz" do
+      cask "xquartz"
+  end
 end
 
 step "Install unrar" do
@@ -236,10 +237,6 @@ step "Install Vagrant" do
     cask "vagrant"
 end
 
-step "Get image for precise64 virtualbox" do
-    system "vagrant box add precise64 http://files.vagrantup.com/precise64.box"
-end
-
 step "Install Tunnelblick" do
     note "Don't forget to set up tunnelblick connections"
     cask "tunnelblick"
@@ -249,13 +246,15 @@ step "Install Skim" do
     cask "Skim"
 end
 
-step "Install meshlab" do
-    cask "meshlab"
-end
+if RESEARCH
+  step "Install meshlab" do
+      cask "meshlab"
+  end
 
-step "Link meshlab bins" do
-  system "ln -s /opt/homebrew-cask/Caskroom/meshlab/*/meshlab.app/Contents/MacOS/meshlab ~/bin/meshlab"
-  system "ln -s /opt/homebrew-cask/Caskroom/meshlab/*/meshlab.app/Contents/MacOS/meshlabserver ~/bin/meshlabserver"
+  step "Link meshlab bins" do
+    system "ln -s /opt/homebrew-cask/Caskroom/meshlab/*/meshlab.app/Contents/MacOS/meshlab ~/bin/meshlab"
+    system "ln -s /opt/homebrew-cask/Caskroom/meshlab/*/meshlab.app/Contents/MacOS/meshlabserver ~/bin/meshlabserver"
+  end
 end
 
 step "Install Google Voice/Video plugin" do
@@ -270,10 +269,6 @@ step "Install omnigraffle" do
   cask "omnigraffle"
 end
 
-step "Tap homebrew/versions for gcc" do
-    command "brew tap homebrew/versions"
-end
-
 step "Wait for Xcode to be installed" do
     prompt "Install Xcode via the App Store"
 end
@@ -282,49 +277,55 @@ step "Accept Xcode license" do
     command "sudo xcodebuild -license"
 end
 
-step "Install gcc" do
-    brew "gcc48"
-end
+if RESEARCH
+  step "Tap homebrew/versions for gcc" do
+      command "brew tap homebrew/versions"
+  end
 
-step "Tap arjun810/openmp" do
-    command "brew tap arjun810/openmp && brew update"
-end
+  step "Install gcc" do
+      brew "gcc48"
+  end
 
-step "Install OpenMP Runtime" do
-    brew "openmp-rt", flags: "--debug"
-end
+  step "Tap arjun810/openmp" do
+      command "brew tap arjun810/openmp && brew update"
+  end
 
-step "Install clang with OpenMP" do
-    brew "llvm-omp", flags: "--HEAD"
-end
+  step "Install OpenMP Runtime" do
+      brew "openmp-rt", flags: "--debug"
+  end
 
-step "Install cmake" do
-    brew "cmake"
-end
+  step "Install clang with OpenMP" do
+      brew "llvm-omp", flags: "--HEAD"
+  end
 
-step "Install Ceres dependency gflags" do
-    brew "gflags"
-end
+  step "Install cmake" do
+      brew "cmake"
+  end
 
-step "Install Ceres dependency glog" do
-    brew "glog"
-end
+  step "Install Ceres dependency gflags" do
+      brew "gflags"
+  end
 
-step "Tap homebrew/science" do
-    command "brew tap homebrew/science"
-end
+  step "Install Ceres dependency glog" do
+      brew "glog"
+  end
 
-step "Install Ceres dependency suite-sparse" do
-    brew "suite-sparse"
-end
+  step "Tap homebrew/science" do
+      command "brew tap homebrew/science"
+  end
 
-step "Install Ceres dependency eigen" do
-    brew "eigen"
-end
+  step "Install Ceres dependency suite-sparse" do
+      brew "suite-sparse"
+  end
 
-step "Install Ceres" do
-    brew "ceres-solver"
-    #brew "arjun810/openmp/ceres-solver"
+  step "Install Ceres dependency eigen" do
+      brew "eigen"
+  end
+
+  step "Install Ceres" do
+      brew "ceres-solver"
+      #brew "arjun810/openmp/ceres-solver"
+  end
 end
 
 step "Install python" do
@@ -357,8 +358,8 @@ step "Install ipython" do
     #pip "ipython[zmq,notebook,test]"
 end
 
-step "Tap samueljohn/python" do
-    command "brew tap samueljohn/python && brew update && brew upgrade"
+step "Tap homebrew/python" do
+    command "brew tap homebrew/python && brew update && brew upgrade"
 end
 
 step "Install numpy and scipy" do
@@ -369,10 +370,11 @@ step "Install freetype" do
     brew "freetype"
 end
 
-step "Link freetype2 to freetype" do
-  note "Symlinking freetype2 to freetype for matplotlib. May want to remove this later."
-  command "ln -s /usr/local/include/freetype2 /usr/local/include/freetype"
-end
+# May no longer be necessary
+#step "Link freetype2 to freetype" do
+#  note "Symlinking freetype2 to freetype for matplotlib. May want to remove this later."
+#  command "ln -s /usr/local/include/freetype2 /usr/local/include/freetype"
+#end
 
 step "Install pillow" do
     brew "pillow"
@@ -386,24 +388,30 @@ step "Install matplotlib" do
     pip "matplotlib"
 end
 
-step "Install theano" do
-    pip "theano --no-deps git+git://github.com/Theano/Theano.git"
-end
-
-step "Install cython" do
-    pip "cython"
-end
-
 step "Install pyyaml" do
     pip "pyyaml"
 end
 
-step "Install hdf5" do
-  brew "hdf5", flags: "--enable-cxx"
-end
+if RESEARCH
+  step "Install theano" do
+      pip "theano --no-deps git+git://github.com/Theano/Theano.git"
+  end
 
-step "Install h5py" do
-    pip "h5py"
+  step "Install cython" do
+      pip "cython"
+  end
+
+  step "Install hdf5" do
+    brew "hdf5", flags: "--enable-cxx"
+  end
+
+  step "Install h5py" do
+      pip "h5py"
+  end
+
+  step "Install opencv" do
+      brew "opencv", flags: ["--with-qt"]
+  end
 end
 
 step "Install nose, nosy, nosegrowlnotify" do
@@ -414,81 +422,82 @@ step "Install nose-parameterized" do
     pip "nose-parameterized"
 end
 
-step "Install opencv" do
-    brew "opencv", flags: ["--with-qt"]
+if RESEARCH
+  # For PCL. Last I checked, their opencv formula was just for enabling OpenNI
+  # from OpenCV, which we don't care about.
+  step "Tap homebrew-cv" do
+      command "brew tap fran6co/cv"
+  end
+
+  step "Install vtk5" do
+      note "Using vtk5 for PCL. PCL will soon be updated for VTK6, so you may
+      want to reinstall at that point."
+      brew "vtk5", flags: ["--with-python", "--with-qt"]
+  end
+
+  step "Install boost" do
+      brew "boost"
+  end
+
+  step "Install flann" do
+    brew "flann", flags: "--enable-python"
+  end
+
+  step "Install pcl" do
+      brew "pcl", flags: ["--HEAD", '--debug']
+  end
+
+  step "Link pcl_viewer" do
+      command "ln -s /usr/local/Cellar/pcl/HEAD/bin/pcl_viewer.app/Contents/MacOS/pcl_viewer /usr/local/bin/pcl_viewer"
+  end
+
+  step "Make berkeley/v" do
+      command "mkdir -p ~/Documents/berkeley/v"
+  end
+
+  step "Clone cyres" do
+      clone "rll/cyres", "~/Documents/berkeley/v/cyres"
+  end
+
+  step "Install cyres" do
+      command "cd ~/Documents/berkeley/v/cyres && python setup.py install"
+  end
+
+  step "Clone cycloud" do
+      clone "rll/cycloud", "~/Documents/berkeley/v/cycloud"
+  end
+
+  step "Install cycloud" do
+      command "cd ~/Documents/berkeley/v/cycloud && python setup.py install"
+  end
+
+  step "Clone pycb" do
+      clone "rll/pycb", "~/Documents/berkeley/v/pycb"
+  end
+
+  step "Install pycb" do
+      command "cd ~/Documents/berkeley/v/pycb && python setup.py install"
+  end
+
+  step "Clone perception" do
+      clone "rll/perception", "~/Documents/berkeley/v/perception"
+  end
 end
 
-# For PCL. Last I checked, their opencv formula was just for enabling OpenNI
-# from OpenCV, which we don't care about.
-step "Tap homebrew-cv" do
-    command "brew tap fran6co/cv"
-end
 
-step "Install vtk5" do
-    note "Using vtk5 for PCL. PCL will soon be updated for VTK6, so you may
-    want to reinstall at that point."
-    brew "vtk5", flags: ["--with-python", "--with-qt"]
-end
+if JULIA
+  # Needed for julia
+  step "Install gfortran" do
+    brew "gfortran"
+  end
 
-step "Install boost" do
-    brew "boost"
-end
+  step "Tap staticfloat/julia" do
+      command "brew tap staticfloat/julia && brew update"
+  end
 
-step "Install flann" do
-  brew "flann", flags: "--enable-python"
-end
-
-step "Install pcl" do
-    brew "pcl", flags: ["--HEAD", '--debug']
-end
-
-step "Link pcl_viewer" do
-    command "ln -s /usr/local/Cellar/pcl/HEAD/bin/pcl_viewer.app/Contents/MacOS/pcl_viewer /usr/local/bin/pcl_viewer"
-end
-
-step "Make berkeley/v" do
-    command "mkdir -p ~/Documents/berkeley/v"
-end
-
-step "Clone cyres" do
-    clone "rll/cyres", "~/Documents/berkeley/v/cyres"
-end
-
-step "Install cyres" do
-    command "cd ~/Documents/berkeley/v/cyres && python setup.py install"
-end
-
-step "Clone cycloud" do
-    clone "rll/cycloud", "~/Documents/berkeley/v/cycloud"
-end
-
-step "Install cycloud" do
-    command "cd ~/Documents/berkeley/v/cycloud && python setup.py install"
-end
-
-step "Clone pycb" do
-    clone "rll/pycb", "~/Documents/berkeley/v/pycb"
-end
-
-step "Install pycb" do
-    command "cd ~/Documents/berkeley/v/pycb && python setup.py install"
-end
-
-step "Clone perception" do
-    clone "rll/perception", "~/Documents/berkeley/v/perception"
-end
-
-# Needed for julia
-step "Install gfortran" do
-  brew "gfortran"
-end
-
-step "Tap staticfloat/julia" do
-    command "brew tap staticfloat/julia && brew update"
-end
-
-step "Install julia" do
-  brew "julia", flags: "--with-accelerate"
+  step "Install julia" do
+    brew "julia", flags: "--with-accelerate"
+  end
 end
 
 step "Install chruby" do
@@ -505,9 +514,9 @@ step "Make /opt/rubies" do
     command "sudo chown arjun:staff /opt/rubies"
 end
 
-step "Install ruby 2.1.0" do
-    prompt "You may want to see if there's a new ruby version available before installing 2.1.0."
-    system "ruby-build 2.1.0 /opt/rubies/2.1.0"
+step "Install ruby 2.2.3" do
+    prompt "You may want to see if there's a new ruby version available before installing 2.2.3."
+    system "ruby-build 2.2.3 /opt/rubies/2.2.3"
 end
 
 step "Ensure chruby is sourced properly in your .zshrc" do
@@ -524,6 +533,10 @@ end
 
 step "Prompt about growl" do
     prompt "Install growl from the App Store."
+end
+
+step "Install slack" do
+  cask "slack"
 end
 
 $notes.each do |note|
