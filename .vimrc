@@ -227,6 +227,7 @@ function! StripTrailingWhitespace()
     call cursor(l, c)
 endfunction
 "autocmd FileType c,cpp,java,go,php,ruby,javascript,python,haml,xml,yml,coffee autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+autocmd BufNewFile,BufReadPost *.coffee setl shiftwidth=2 expandtab
 
 let mapleader = '\'
 
@@ -412,7 +413,7 @@ if has('gui_running')
     set guioptions-=r " Remove the scrollbar
     set lines=40 " 40 lines of text instead of 24
     if has("gui_gtk2")
-        set guifont=Monaco\ for\ Powerline\ 12
+        set guifont=Monaco\ for\ Powerline\ 16
     elseif has("gui_macvim")
         set guifont=Monaco\ for\ Powerline:h14
     elseif has("gui_win32")
