@@ -71,7 +71,7 @@ alias ompcmb='cd build; CXX=clang-omp CC=clang-omp cmake ..; make; cd ..'
 if [[ $platform = "Linux" ]]; then
     source /opt/intel/bin/ifortvars.sh intel64
     source /opt/intel/bin/compilervars.sh intel64
-    source /opt/intel/bin/iccvars.sh intel64 
+    source /opt/intel/bin/iccvars.sh intel64
 fi
 
 function viewpcd(){
@@ -81,12 +81,12 @@ function viewpcd(){
     meshlab $1:r.ply
 }
 
-export HOMEBREW_GITHUB_API_TOKEN=d74a486aa9a339c2c3551e8eb8c0cb282b256ab0
+source ~/.secrets.env
 
 if [[ -e /usr/local/share/chruby/chruby.sh ]]; then
     source /usr/local/share/chruby/chruby.sh
     source /usr/local/share/chruby/auto.sh
-    chruby 2.1.5
+    chruby 2.3.0
 fi
 
 if type hub > /dev/null; then

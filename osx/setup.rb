@@ -1,5 +1,7 @@
 RESEARCH = false
 JULIA = false
+JAVA = false
+XCODE = false
 
 $steps_filename = File.expand_path "~/.setup_steps"
 if File.file? $steps_filename
@@ -88,7 +90,7 @@ def prompt(message)
 end
 
 step "Install homebrew" do
-    command 'ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"'
+    command '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
 end
 
 step "Install wget git" do
@@ -108,9 +110,11 @@ step "Init dotfiles" do
     command "cd ~/.dotfiles && ./init_dotfiles.sh"
 end
 
-# .theanorc has to be done manually since it's osx specific
-step "Link .theanorc" do
-    command "ln -s ~/.dotfiles/osx/.theanorc ~/.theanorc"
+if RESEARCH
+  # .theanorc has to be done manually since it's osx specific
+  step "Link .theanorc" do
+      command "ln -s ~/.dotfiles/osx/.theanorc ~/.theanorc"
+  end
 end
 
 # .amethyst has to be done manually since it's osx specific
@@ -144,10 +148,6 @@ step "Make ~/bin" do
     command "mkdir ~/bin"
 end
 
-step "Install homebrew-cask" do
-    command "brew tap phinze/homebrew-cask && brew install brew-cask"
-end
-
 step "Install iTerm2" do
     note "Don't forget to add the iTerm colorschemes. They're in ~/.dotfiles/osx."
     note "Don't forget to set up iTerm's fonts and update it so Powerline works."
@@ -178,8 +178,10 @@ step "Install silverlight" do
     cask "silverlight"
 end
 
-step "Install java" do
-    cask "java"
+if JAVA
+  step "Install java" do
+      cask "java"
+  end
 end
 
 step "Install Alfred" do
@@ -187,12 +189,8 @@ step "Install Alfred" do
     cask "alfred"
 end
 
-step "Set up Alfred with homebrew-cask" do
-    command "brew cask alfred link"
-end
-
 step "Install f.lux" do
-    cask "f-lux"
+    cask "flux"
 end
 
 step "Install autojump" do
@@ -243,7 +241,7 @@ step "Install Tunnelblick" do
 end
 
 step "Install Skim" do
-    cask "Skim"
+    cask "skim"
 end
 
 if RESEARCH
@@ -261,20 +259,30 @@ step "Install Google Voice/Video plugin" do
     cask "google-hangouts"
 end
 
+step "Install Google Drive" do
+    cask "google-drive"
+end
+
 step "Install Flash" do
     cask "flash"
+end
+
+step "Install Google Music client" do
+    cask "radiant-player"
 end
 
 step "Install omnigraffle" do
   cask "omnigraffle"
 end
 
-step "Wait for Xcode to be installed" do
-    prompt "Install Xcode via the App Store"
-end
+if XCODE
+  step "Wait for Xcode to be installed" do
+      prompt "Install Xcode via the App Store"
+  end
 
-step "Accept Xcode license" do
-    command "sudo xcodebuild -license"
+  step "Accept Xcode license" do
+      command "sudo xcodebuild -license"
+  end
 end
 
 if RESEARCH
@@ -352,10 +360,17 @@ step "Install nose" do
     pip "nose"
 end
 
+step "Install nosy, nosegrowlnotify" do
+    pip ["nosy", "nosegrowlnotify"]
+end
+
+step "Install nose-parameterized" do
+    pip "nose-parameterized"
+end
+
+
 step "Install ipython" do
     pip "ipython[zmq,qtconsole,notebook,test]"
-    # Don't think qtconsole will work because of nonsense with libstdc++
-    #pip "ipython[zmq,notebook,test]"
 end
 
 step "Tap homebrew/python" do
@@ -392,17 +407,20 @@ step "Install pyyaml" do
     pip "pyyaml"
 end
 
+step "Install cython" do
+    pip "cython"
+end
+
 if RESEARCH
   step "Install theano" do
       pip "theano --no-deps git+git://github.com/Theano/Theano.git"
   end
-
-  step "Install cython" do
-      pip "cython"
-  end
-
   step "Install hdf5" do
     brew "hdf5", flags: "--enable-cxx"
+  end
+
+  step "Install h5py" do
+      pip "h5py"
   end
 
   step "Install h5py" do
@@ -412,17 +430,7 @@ if RESEARCH
   step "Install opencv" do
       brew "opencv", flags: ["--with-qt"]
   end
-end
 
-step "Install nose, nosy, nosegrowlnotify" do
-    pip ["nose", "nosy", "nosegrowlnotify"]
-end
-
-step "Install nose-parameterized" do
-    pip "nose-parameterized"
-end
-
-if RESEARCH
   # For PCL. Last I checked, their opencv formula was just for enabling OpenNI
   # from OpenCV, which we don't care about.
   step "Tap homebrew-cv" do
@@ -484,7 +492,6 @@ if RESEARCH
   end
 end
 
-
 if JULIA
   # Needed for julia
   step "Install gfortran" do
@@ -514,9 +521,9 @@ step "Make /opt/rubies" do
     command "sudo chown arjun:staff /opt/rubies"
 end
 
-step "Install ruby 2.2.3" do
-    prompt "You may want to see if there's a new ruby version available before installing 2.2.3."
-    system "ruby-build 2.2.3 /opt/rubies/2.2.3"
+step "Install ruby 2.3.0" do
+    prompt "You may want to see if there's a new ruby version available before installing 2.3.0."
+    system "ruby-build 2.3.0 /opt/rubies/2.3.0"
 end
 
 step "Ensure chruby is sourced properly in your .zshrc" do
@@ -531,12 +538,41 @@ step "Install ansible" do
     brew "ansible"
 end
 
-step "Prompt about growl" do
-    prompt "Install growl from the App Store."
-end
+# TODO try without this.
+#step "Prompt about growl" do
+#    prompt "Install growl from the App Store."
+#end
 
 step "Install slack" do
   cask "slack"
+end
+
+step "Install front" do
+  cask "front"
+end
+
+step "Install quip" do
+  cask "quip"
+end
+
+step "Install 1password" do
+  cask "1password"
+end
+
+step "Install dropbox" do
+  cask "dropbox"
+end
+
+step "Install packer" do
+    brew "packer"
+end
+
+step "Install arq" do
+  cask "arq"
+end
+
+step "Install sketch" do
+  cask "sketch"
 end
 
 $notes.each do |note|
