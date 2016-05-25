@@ -470,3 +470,6 @@ let g:syntastic_check_on_wq = 0
 " Ruby
 let g:ruby_indent_access_modifier_style="indent"
 let g:syntastic_ruby_checkers          = ['rubocop', 'mri', 'reek', 'flog']
+
+" run rubocop autoformat
+nmap <leader>rc <Esc>:.,$!rubocop -a %<CR>
