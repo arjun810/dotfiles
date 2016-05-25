@@ -23,7 +23,8 @@ Plugin 'skammer/vim-css-color'
 Plugin 'terryma/vim-multiple-cursors'
 
 "Plugin 'Lokaltog/powerline', {'rtp':'/powerline/bindings/vim'}
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'godlygeek/csapprox'
 Plugin 'mbbill/undotree'
 Plugin 'nathanaelkane/vim-indent-guides'
@@ -31,7 +32,6 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'godlygeek/tabular'
-Plugin 'zerowidth/vim-copy-as-rtf'
 
 
 " TODO potentially use, settings below
@@ -417,7 +417,7 @@ if has('gui_running')
     set guioptions-=r " Remove the scrollbar
     set lines=40 " 40 lines of text instead of 24
     if has("gui_gtk2")
-        set guifont=Monaco\ for\ Powerline\ 16
+        set guifont=Monaco\ for\ Powerline\ 12
     elseif has("gui_macvim")
         set guifont=Monaco\ for\ Powerline:h14
     elseif has("gui_win32")
