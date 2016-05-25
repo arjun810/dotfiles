@@ -235,6 +235,10 @@ step "Install Vagrant" do
     cask "vagrant"
 end
 
+step "install vagrant rsync plugin" do
+    command "vagrant plugin install vagrant-gatling-rsync"
+end
+
 step "Install Tunnelblick" do
     note "Don't forget to set up tunnelblick connections"
     cask "tunnelblick"
@@ -575,6 +579,24 @@ step "Install sketch" do
   cask "sketch"
 end
 
+step "Install terraform" do
+  cask "terraform"
+end
+
+step "Install skype" do
+  cask "skype"
+end
+
+step "Install gitx" do
+  cask "gitx"
+end
+
 $notes.each do |note|
     puts note
 end
+
+#maybe
+# brew tap railwaycat/homebrew-emacsmacport
+# brew install emacs-mac --with-spacemacs-icon  # OR, brew cask install emacs-mac
+# brew linkapps
+# git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d

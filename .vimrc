@@ -48,11 +48,15 @@ Plugin 'tpope/vim-rails.git'
 Plugin 'vim-ruby/vim-ruby.git'
 Plugin 'tpope/vim-bundler.git'
 Plugin 'chase/vim-ansible-yaml'
+Plugin 'mtscout6/vim-cjsx'
 
 " May need to use classic vim-latex-suite as this is a fork
 Plugin 'gerw/vim-latex-suite'
 
 Plugin 'freitass/todo.txt-vim'
+
+Plugin 'hashivim/vim-terraform'
+
 call vundle#end()
 filetype plugin indent on " Automatically detect file types.
 
@@ -457,6 +461,12 @@ endfunction
 command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
 " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
 
+" Syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 " Ruby
 let g:ruby_indent_access_modifier_style="indent"
+let g:syntastic_ruby_checkers          = ['rubocop', 'mri', 'reek', 'flog']

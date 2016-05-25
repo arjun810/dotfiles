@@ -92,3 +92,31 @@ fi
 if type hub > /dev/null; then
     alias git=hub
 fi
+
+function gs_ip_from_instance() {
+    echo $(aws ec2 describe-instances --profile gradescope --filters "{\"Name\":\"tag:Name\", \"Values\":[\"$1\"]}" --query='Reservations[0].Instances[0].PublicIpAddress' | tr -d '"')
+}
+
+function gs-ssh-aws() {
+    ssh ubuntu@$(gs_ip_from_instance "$1")
+}
+
+function web0() {
+    gs-ssh-aws production-web-0
+}
+
+function web1() {
+    gs-ssh-aws production-web-1
+}
+
+function redis() {
+    gs-ssh-aws production-redis-sidekiq-0
+}
+
+function sidekiq() {
+    gs-ssh-aws production-sidekiq-0
+}
+
+function staging() {
+    gs-ssh-aws staging-web-0
+}
