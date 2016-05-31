@@ -46,6 +46,7 @@ Plugin 'tpope/vim-haml'
 Plugin 'slim-template/vim-slim.git'
 Plugin 'tpope/vim-rails.git'
 Plugin 'vim-ruby/vim-ruby.git'
+Plugin 'ngmy/vim-rubocop'
 Plugin 'tpope/vim-bundler.git'
 Plugin 'chase/vim-ansible-yaml'
 Plugin 'mtscout6/vim-cjsx'
@@ -472,4 +473,4 @@ let g:ruby_indent_access_modifier_style="indent"
 let g:syntastic_ruby_checkers          = ['rubocop', 'mri', 'reek', 'flog']
 
 " run rubocop autoformat
-nmap <leader>rc <Esc>:.,$!rubocop -a %<CR>
+nmap <leader>rc <Esc>:RuboCop -a<CR>
