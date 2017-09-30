@@ -4,6 +4,7 @@ pushd ~
 ln -s .dotfiles/.vimrc ~/.vimrc
 ln -s .dotfiles/.zshrc ~/.zshrc
 ln -s .dotfiles/.gemrc ~/.gemrc
+ln -s .dotfiles/.gitconfig ~/.gitconfig
 if [ ! -L ~/.vim ]
 then
     ln -s .dotfiles/.vim ~/.vim
