@@ -39,6 +39,7 @@ Plugin 'godlygeek/tabular'
 
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
 Plugin 'elzr/vim-json'
 Plugin 'amirh/HTML-AutoCloseTag'
 Plugin 'hail2u/vim-css3-syntax'
@@ -52,7 +53,8 @@ Plugin 'chase/vim-ansible-yaml'
 Plugin 'mtscout6/vim-cjsx'
 
 " May need to use classic vim-latex-suite as this is a fork
-Plugin 'gerw/vim-latex-suite'
+"Plugin 'gerw/vim-latex-suite'
+Plugin 'lervag/vimtex'
 
 Plugin 'freitass/todo.txt-vim'
 
@@ -218,6 +220,9 @@ au FileType ruby setl sw=2 sts=2 et
 au FileType slim setl sw=2 sts=2 et
 au FileType coffee setl sw=2 sts=2 et
 au FileType sass setl sw=2 sts=2 et
+au FileType scss setl sw=2 sts=2 et
+au FileType javascript.jsx setl sw=2 sts=2 et
+au FileType javascript setl sw=2 sts=2 et
 
 " Remove trailing whitespaces and ^M chars in programs
 function! StripTrailingWhitespace()
@@ -393,6 +398,7 @@ let g:indent_guides_enable_on_vim_startup = 1
 let g:airline_theme = 'murmur'
 let g:airline_enable_branch     = 1
 let g:airline_enable_syntastic  = 1
+set ttimeoutlen=50
 
 " vim-powerline symbols
 let g:airline_powerline_fonts = 1
@@ -433,12 +439,36 @@ else
     endif
 endif
 
-let g:tex_flavor = 'latex'
-let g:Tex_MultipleCompileFormat = 'pdf,aux'
-let g:Tex_TreatMacViewerAsUNIX = 0
-let g:Tex_DefaultTargetFormat = 'pdf'
-let g:Tex_CompileRule_pdf = 'pdflatex -synctex=1 --interaction=nonstopmode $*'
-let g:Tex_ViewRule_pdf = 'Skim'
+"let g:tex_flavor = 'latex'
+"let g:Tex_MultipleCompileFormat = 'pdf,aux'
+"let g:Tex_TreatMacViewerAsUNIX = 0
+"let g:Tex_DefaultTargetFormat = 'pdf'
+"let g:Tex_CompileRule_pdf = 'pdflatex -synctex=1 --interaction=nonstopmode $*'
+"let g:Tex_ViewRule_pdf = 'Skim'
+
+let g:vimtex_view_general_viewer
+        \ = '/Users/arjun/Applications/Skim.app/Contents/SharedSupport/displayline'
+let g:vimtex_view_general_options = '-r @line @pdf @tex'
+
+" This adds a callback hook that updates Skim after compilation
+let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
+function! UpdateSkim(status)
+    if !a:status | return | endif
+
+    let l:out = b:vimtex.out()
+    let l:tex = expand('%:p')
+    let l:cmd = [g:vimtex_view_general_viewer, '-r']
+    if !empty(system('pgrep Skim'))
+    call extend(l:cmd, ['-g'])
+    endif
+    if has('nvim')
+    call jobstart(l:cmd + [line('.'), l:out, l:tex])
+    elseif has('job')
+    call job_start(l:cmd + [line('.'), l:out, l:tex])
+    else
+    call system(join(l:cmd + [line('.'), shellescape(l:out), shellescape(l:tex)], ' '))
+    endif
+endfunction
 
 " Run a shell command
 function! s:RunShellCommand(cmdline)
@@ -468,9 +498,16 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
+let g:syntastic_scss_checkers = ['scss_lint']
+let g:syntastic_slim_checkers = ['slim_lint']
+let g:syntastic_tex_checkers=[]
+
 " Ruby
-let g:ruby_indent_access_modifier_style="indent"
-let g:syntastic_ruby_checkers          = ['rubocop', 'mri', 'reek', 'flog']
+let g:ruby_indent_access_modifier_style = "ruby"
+let g:syntastic_ruby_checkers = ['rubocop', 'mri']
+", 'reek', 'flog']
 
 " run rubocop autoformat
 nmap <leader>rc <Esc>:RuboCop -a<CR>
+
+nmap <leader>ri <Esc>:RuboCop -a --only Style/IndentationWidth,Style/IndentationConsistency<CR>

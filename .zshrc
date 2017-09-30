@@ -86,7 +86,7 @@ source ~/.secrets.env
 if [[ -e /usr/local/share/chruby/chruby.sh ]]; then
     source /usr/local/share/chruby/chruby.sh
     source /usr/local/share/chruby/auto.sh
-    chruby 2.3.0
+    chruby 2.4.2
 fi
 
 if type hub > /dev/null; then
@@ -94,7 +94,11 @@ if type hub > /dev/null; then
 fi
 
 function gs_ip_from_instance() {
-    echo $(aws ec2 describe-instances --profile gradescope --filters "{\"Name\":\"tag:Name\", \"Values\":[\"$1\"]}" --query='Reservations[0].Instances[0].PublicIpAddress' | tr -d '"')
+    echo $(aws ec2 describe-instances --profile gradescope --filters "Name=instance-state-name,Values=running" "Name=tag:Name,Values=$1" --query='Reservations[0].Instances[0].PublicIpAddress' | tr -d '"')
+}
+
+function list_ecs() {
+    echo $(aws ec2 describe-instances --profile gradescope --filters "Name=tag:aws:autoscaling:groupName,Values=Production ECS" "Name=instance-state-name,Values=running" --query='Reservations[*].Instances[*].PublicIpAddress')
 }
 
 function gs-ssh-aws() {

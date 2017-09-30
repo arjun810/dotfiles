@@ -1,0 +1,16 @@
+# This is Git's per-user configuration file.
+[user]
+name = Arjun Singh
+email = arjun810@gmail.com
+[core]
+	editor = /usr/bin/vim
+	pager = diff-so-fancy | less --tabs=4 -RFX
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[push]
+	default = current
+[alias]
+	serve = daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/
