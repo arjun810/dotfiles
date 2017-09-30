@@ -203,6 +203,7 @@ set splitbelow        " Puts new split windows to the bottom of the current
 set pastetoggle=<F12> " pastetoggle (sane indentation on pastes)
 
 inoremap <silent> <C-g> <ESC>u:set paste<CR>.:set nopaste<CR>gi
+inoremap jj <esc>
 
 " Some filetype-specific stuff
 
