@@ -1,7 +1,8 @@
 RESEARCH = false
 JULIA = false
 JAVA = false
-XCODE = false
+XCODE = true
+GRADESCOPE = true
 
 $steps_filename = File.expand_path "~/.setup_steps"
 if File.file? $steps_filename
@@ -73,7 +74,7 @@ end
 
 def pip(packages, opts={})
     packages = [packages].flatten
-    command = "pip install #{packages.join(" ")}"
+    command = "pip3 install #{packages.join(" ")}"
     system command
 end
 
@@ -89,9 +90,9 @@ def prompt(message)
     gets
 end
 
-step "Install homebrew" do
-    command '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
-end
+#step "Install homebrew" do
+#    command '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
+#end
 
 step "Install wget git" do
     brew ['git', 'wget']
@@ -174,9 +175,9 @@ step "Install Firefox" do
     cask "firefox"
 end
 
-step "Install silverlight" do
-    cask "silverlight"
-end
+#step "Install silverlight" do
+#    cask "silverlight"
+#end
 
 if JAVA
   step "Install java" do
@@ -239,10 +240,10 @@ step "install vagrant rsync plugin" do
     command "vagrant plugin install vagrant-gatling-rsync"
 end
 
-step "Install Tunnelblick" do
-    note "Don't forget to set up tunnelblick connections"
-    cask "tunnelblick"
-end
+#step "Install Tunnelblick" do
+#    note "Don't forget to set up tunnelblick connections"
+#    cask "tunnelblick"
+#end
 
 step "Install Skim" do
     cask "skim"
@@ -264,11 +265,11 @@ step "Install Google Voice/Video plugin" do
 end
 
 step "Install Google Drive" do
-    cask "google-drive"
+    cask "google-backup-and-sync"
 end
 
 step "Install Flash" do
-    cask "flash"
+    cask "flash-npapi"
 end
 
 step "Install Google Music client" do
@@ -282,10 +283,6 @@ end
 if XCODE
   step "Wait for Xcode to be installed" do
       prompt "Install Xcode via the App Store"
-  end
-
-  step "Accept Xcode license" do
-      command "sudo xcodebuild -license"
   end
 end
 
@@ -340,46 +337,48 @@ if RESEARCH
   end
 end
 
-step "Install python" do
-    brew "python"
+step "Install python3" do
+    brew "python3"
 end
 
 step "Upgrade setuptools and pip" do
-    command "pip install --upgrade setuptools && pip install --upgrade pip"
+    command "pip3 install --upgrade setuptools && pip3 install --upgrade pip"
 end
 
-step "Install qt" do
-    brew "qt"
+if RESEARCH
+	step "Install qt" do
+	    brew "qt"
+	end
+
+	step "Install pyqt" do
+	    brew "pyqt"
+	end
+
+	step "Install zeromq" do
+	    brew "zmq"
+	end
+
+	step "Install nose" do
+	    pip "nose"
+	end
+
+	step "Install nosy, nosegrowlnotify" do
+	    pip ["nosy", "nosegrowlnotify"]
+	end
+
+	step "Install nose-parameterized" do
+	    pip "nose-parameterized"
+	end
 end
 
-step "Install pyqt" do
-    brew "pyqt"
+
+step "Install jupyter" do
+    pip "jupyter"
 end
 
-step "Install zeromq" do
-    brew "zmq"
-end
-
-step "Install nose" do
-    pip "nose"
-end
-
-step "Install nosy, nosegrowlnotify" do
-    pip ["nosy", "nosegrowlnotify"]
-end
-
-step "Install nose-parameterized" do
-    pip "nose-parameterized"
-end
-
-
-step "Install ipython" do
-    pip "ipython[zmq,qtconsole,notebook,test]"
-end
-
-step "Tap homebrew/python" do
-    command "brew tap homebrew/python && brew update && brew upgrade"
-end
+#step "Tap homebrew/python" do
+#    command "brew tap homebrew/python && brew update && brew upgrade"
+#end
 
 step "Install numpy and scipy" do
     brew ["numpy", "scipy"]
@@ -396,7 +395,7 @@ end
 #end
 
 step "Install pillow" do
-    brew "pillow"
+    pip "pillow"
 end
 
 step "Install matplotlib dependencies: pyparsing python-dateutil" do
@@ -525,9 +524,9 @@ step "Make /opt/rubies" do
     command "sudo chown arjun:staff /opt/rubies"
 end
 
-step "Install ruby 2.3.0" do
-    prompt "You may want to see if there's a new ruby version available before installing 2.3.0."
-    system "ruby-build 2.3.0 /opt/rubies/2.3.0"
+step "Install ruby 2.4.2" do
+    prompt "You may want to see if there's a new ruby version available before installing 2.4.2."
+    system "ruby-build 2.4.2 /opt/rubies/2.4.2"
 end
 
 step "Ensure chruby is sourced properly in your .zshrc" do
@@ -580,7 +579,7 @@ step "Install sketch" do
 end
 
 step "Install terraform" do
-  cask "terraform"
+  brew "terraform"
 end
 
 step "Install skype" do
@@ -589,6 +588,28 @@ end
 
 step "Install gitx" do
   cask "gitx"
+end
+
+if GRADESCOPE
+  step "Make ~/Documents/gradescope" do
+      command "mkdir ~/Documents/gradescope"
+  end
+
+  step "Clone gradescope-app repo" do
+    clone "gradescope/gradescope-app", "~/Documents/gradescope/gradescope-app"
+  end
+
+  step "Clone infrastrucure repo" do
+    clone "gradescope/infrastructure", "~/Documents/gradescope/infrastructure"
+  end
+end
+
+step "Install diff-so-fancy" do
+  brew "diff-so-fancy"
+end
+
+step "Install awscli" do
+  brew "awscli"
 end
 
 $notes.each do |note|

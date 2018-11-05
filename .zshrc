@@ -94,11 +94,11 @@ if type hub > /dev/null; then
 fi
 
 function gs_ip_from_instance() {
-    echo $(aws ec2 describe-instances --profile gradescope --filters "Name=instance-state-name,Values=running" "Name=tag:Name,Values=$1" --query='Reservations[0].Instances[0].PublicIpAddress' | tr -d '"')
+    echo $(aws ec2 describe-instances --region us-west-2 --profile gradescope --filters "Name=instance-state-name,Values=running" "Name=tag:Name,Values=$1" --query='Reservations[0].Instances[0].PublicIpAddress' | tr -d '"')
 }
 
 function list_ecs() {
-    echo $(aws ec2 describe-instances --profile gradescope --filters "Name=tag:aws:autoscaling:groupName,Values=Production ECS" "Name=instance-state-name,Values=running" --query='Reservations[*].Instances[*].PublicIpAddress')
+    echo $(aws ec2 describe-instances --region us-west-2 --profile gradescope --filters "Name=tag:aws:autoscaling:groupName,Values=Production ECS" "Name=instance-state-name,Values=running" --query='Reservations[*].Instances[*].PublicIpAddress')
 }
 
 function gs-ssh-aws() {
@@ -124,3 +124,10 @@ function sidekiq() {
 function staging() {
     gs-ssh-aws staging-web-0
 }
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh ]] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh ]] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh

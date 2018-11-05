@@ -12,7 +12,8 @@ Plugin 'flazz/vim-colorschemes'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'mileszs/ack.vim'
-Plugin 'kien/ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'FelikZ/ctrlp-py-matcher'
 "Plugin 'Valloric/YouCompleteMe'
 Plugin 'ervandew/supertab.git'
 Plugin 'davidhalter/jedi-vim.git'
@@ -29,9 +30,9 @@ Plugin 'godlygeek/csapprox'
 Plugin 'mbbill/undotree'
 Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'godlygeek/tabular'
+Plugin 'w0rp/ale'
 
 
 " TODO potentially use, settings below
@@ -41,7 +42,6 @@ Plugin 'kchmck/vim-coffee-script'
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 Plugin 'elzr/vim-json'
-Plugin 'amirh/HTML-AutoCloseTag'
 Plugin 'hail2u/vim-css3-syntax'
 Plugin 'tpope/vim-haml'
 Plugin 'slim-template/vim-slim.git'
@@ -358,7 +358,7 @@ nnoremap <silent> <Leader>b :CtrlPBuffer<CR>
 nnoremap <silent> <Leader>f :ClearCtrlPCache<CR>
 
 let g:ctrlp_custom_ignore = {
-    \ 'dir': '\.git$\|\.hg$\|\.svn$',
+    \ 'dir': '\.git$\|\.hg$\|\.svn$|spec/vcr_cassettes',
     \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$'
 \ }
 
@@ -369,6 +369,8 @@ let g:ctrlp_user_command = {
     \ },
     \ 'fallback': 'find %s -type f'
 \ }
+let g:ctrlp_follow_symlinks = 1
+let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 
  " Fugitive
 nnoremap <silent> <leader>gs :Gstatus<CR>
@@ -383,7 +385,7 @@ nnoremap <silent> <leader>ge :Gedit<CR>
 nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 
 " gitgutter
-let g:gitgutter_sign_column_always = 1
+set signcolumn=yes
 
 " UndoTree
 nnoremap <Leader>u :UndotreeToggle<CR>
@@ -398,7 +400,7 @@ let g:indent_guides_enable_on_vim_startup = 1
 " vim-airline
 let g:airline_theme = 'murmur'
 let g:airline_enable_branch     = 1
-let g:airline_enable_syntastic  = 1
+let g:airline#extensions#ale#enabled = 1
 set ttimeoutlen=50
 
 " vim-powerline symbols
@@ -492,21 +494,6 @@ endfunction
 
 command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
 " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
-
-" Syntastic
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-let g:syntastic_scss_checkers = ['scss_lint']
-let g:syntastic_slim_checkers = ['slim_lint']
-let g:syntastic_tex_checkers=[]
-
-" Ruby
-let g:ruby_indent_access_modifier_style = "ruby"
-let g:syntastic_ruby_checkers = ['rubocop', 'mri']
-", 'reek', 'flog']
 
 " run rubocop autoformat
 nmap <leader>rc <Esc>:RuboCop -a<CR>
