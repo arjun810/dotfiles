@@ -3,15 +3,13 @@
 pushd ~
 ln -s .dotfiles/.vimrc ~/.vimrc
 ln -s .dotfiles/.zshrc ~/.zshrc
+ln -s .dotfiles/.zshenv ~/.zshenv
+ln -s .dotfiles/.zshlogin ~/.zshlogin
+ln -s .dotfiles/.zimrc ~/.zimrc
 ln -s .dotfiles/.gemrc ~/.gemrc
 ln -s .dotfiles/.gitconfig ~/.gitconfig
-if [ ! -L ~/.vim ]
-then
-    ln -s .dotfiles/.vim ~/.vim
-fi
+ln -s .dotfiles/.tool-versions ~/.tool-versions
 popd
 
 git submodule init
 git submodule update
-
-vim -c "BundleInstall" -c "qa"

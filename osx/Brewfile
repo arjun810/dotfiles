@@ -1,0 +1,37 @@
+brew 'git'
+brew 'wget'
+
+brew 'zsh'
+brew 'fzf'
+brew 'fasd'
+brew 'diff-so-fancy'
+
+brew 'asdf'
+
+brew 'ag'
+
+brew 'python3' # Other formulas depend on Homebrew's python3, like MacVim
+brew 'rust'
+
+brew 'mas'
+
+brew 'postgresql'
+brew 'redis'
+brew 'imagemagick'
+brew 'yarn'
+
+cask 'macvim'
+cask 'iterm2'
+cask 'google-chrome'
+cask 'firefox'
+cask 'slack'
+cask 'dropbox'
+cask 'spotify'
+cask 'alfred'
+cask 'zoom'
+cask 'docker'
+cask 'mem'
+cask 'brave-browser'
+
+mas '1Password', id: 1333542190
+mas 'Xcode', id: 497799835

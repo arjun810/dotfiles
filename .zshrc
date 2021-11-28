@@ -1,32 +1,118 @@
 PLATFORM=`uname`
+export PATH=~/bin:$PATH
 
-export PATH=~/bin:/usr/local/bin:/usr/sbin:$PATH
+setopt HIST_IGNORE_ALL_DUPS
 
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
+# Input/output
+#
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="agnoster"
+# Set editor default keymap to emacs (`-e`) or vi (`-v`)
+bindkey -e
 
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true"
+# Remove path separator from WORDCHARS.
+WORDCHARS=${WORDCHARS//[\/]}
 
-# Comment this out to disable weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
+# -----------------
+# Zim configuration
+# -----------------
 
-# Uncomment following line if you want to disable autosetting terminal title.
-# DISABLE_AUTO_TITLE="true"
+# Use degit instead of git as the default tool to install and update modules.
+#zstyle ':zim:zmodule' use 'degit'
 
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-# COMPLETION_WAITING_DOTS="true"
+# --------------------
+# Module configuration
+# --------------------
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git autojump)
+#
+# completion
+#
+
+# Set a custom path for the completion dump file.
+# If none is provided, the default ${ZDOTDIR:-${HOME}}/.zcompdump is used.
+#zstyle ':zim:completion' dumpfile "${ZDOTDIR:-${HOME}}/.zcompdump-${ZSH_VERSION}"
+
+#
+# git
+#
+
+# Set a custom prefix for the generated aliases. The default prefix is 'G'.
+#zstyle ':zim:git' aliases-prefix 'g'
+
+#
+# input
+#
+
+# Append `../` to your input for each `.` you type after an initial `..`
+zstyle ':zim:input' double-dot-expand yes
+
+#
+# termtitle
+#
+
+# Set a custom terminal title format using prompt expansion escape sequences.
+# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
+# If none is provided, the default '%n@%m: %~' is used.
+zstyle ':zim:termtitle' format '%1~'
+
+#
+# zsh-autosuggestions
+#
+
+# Customize the style that the suggestions are shown with.
+# See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+
+#
+# zsh-syntax-highlighting
+#
+
+# Set what highlighters will be used.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+
+# Customize the main highlighter styles.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/main.md#how-to-tweak-it
+#typeset -A ZSH_HIGHLIGHT_STYLES
+#ZSH_HIGHLIGHT_STYLES[comment]='fg=242'
+
+# ------------------
+# Initialize modules
+# ------------------
+
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
+  # Update static initialization script if it does not exist or it's outdated, before sourcing it
+  source ${ZIM_HOME}/zimfw.zsh init -q
+fi
+source ${ZIM_HOME}/init.zsh
+
+# ------------------------------
+# Post-init module configuration
+# ------------------------------
+
+#
+# zsh-history-substring-search
+#
+
+# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# Bind up and down keys
+zmodload -F zsh/terminfo +p:terminfo
+if [[ -n ${terminfo[kcuu1]} && -n ${terminfo[kcud1]} ]]; then
+  bindkey ${terminfo[kcuu1]} history-substring-search-up
+  bindkey ${terminfo[kcud1]} history-substring-search-down
+fi
+
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+# }}} End configuration added by Zim install
+
+# Like autojump
+alias j='fasd_cd -d'
+unalias f
 
 # Some platform-specific stuff
 case "$PLATFORM" in
@@ -42,19 +128,9 @@ case "$PLATFORM" in
         ;;
 esac
 
-source $ZSH/oh-my-zsh.sh
-
-# Customize to your needs...
-
-alias ack=ack-grep
+#source $ZSH/oh-my-zsh.sh
 
 unsetopt correct_all
-
-function edx() {
-  pushd ~/Documents/cs188/edx
-  . ./setup_env.sh
-  popd
-}
 
 function rz() {
   . ~/.zshrc
@@ -64,70 +140,6 @@ function textme() {
   echo "$@" | $mailer_bin -s "new notification" 7029857442@txt.att.net
 }
 
-alias cmb='cd build; cmake ..; make; cd ..'
-alias ompcmb='cd build; CXX=clang-omp CC=clang-omp cmake ..; make; cd ..'
-
-# MKL stuff on linux
-if [[ $platform = "Linux" ]]; then
-    source /opt/intel/bin/ifortvars.sh intel64
-    source /opt/intel/bin/compilervars.sh intel64
-    source /opt/intel/bin/iccvars.sh intel64
-fi
-
-function viewpcd(){
-    if [[ -e $1:r.pcd ]]; then
-        pcl_pcd2ply $1 $1:r.ply
-    fi
-    meshlab $1:r.ply
-}
-
 source ~/.secrets.env
 
-if [[ -e /usr/local/share/chruby/chruby.sh ]]; then
-    source /usr/local/share/chruby/chruby.sh
-    source /usr/local/share/chruby/auto.sh
-    chruby 2.4.2
-fi
-
-if type hub > /dev/null; then
-    alias git=hub
-fi
-
-function gs_ip_from_instance() {
-    echo $(aws ec2 describe-instances --region us-west-2 --profile gradescope --filters "Name=instance-state-name,Values=running" "Name=tag:Name,Values=$1" --query='Reservations[0].Instances[0].PublicIpAddress' | tr -d '"')
-}
-
-function list_ecs() {
-    echo $(aws ec2 describe-instances --region us-west-2 --profile gradescope --filters "Name=tag:aws:autoscaling:groupName,Values=Production ECS" "Name=instance-state-name,Values=running" --query='Reservations[*].Instances[*].PublicIpAddress')
-}
-
-function gs-ssh-aws() {
-    ssh ubuntu@$(gs_ip_from_instance "$1")
-}
-
-function web0() {
-    gs-ssh-aws production-web-0
-}
-
-function web1() {
-    gs-ssh-aws production-web-1
-}
-
-function redis() {
-    gs-ssh-aws production-redis-sidekiq-0
-}
-
-function sidekiq() {
-    gs-ssh-aws production-sidekiq-0
-}
-
-function staging() {
-    gs-ssh-aws staging-web-0
-}
-
-# tabtab source for serverless package
-# uninstall by removing these lines or running `tabtab uninstall serverless`
-[[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh ]] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh
-# tabtab source for sls package
-# uninstall by removing these lines or running `tabtab uninstall sls`
-[[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh ]] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh
+. /opt/homebrew/opt/asdf/asdf.sh

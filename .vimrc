@@ -1,66 +1,64 @@
-" Cobbled together from various sources, including the spf-13 .vimrc
-
 set nocompatible  " Must be first line
 
-" Set up Vundle
-filetype on
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" Force python3
+if has('python3')
+endif
 
-Plugin 'flazz/vim-colorschemes'
-Plugin 'tpope/vim-fugitive'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'mileszs/ack.vim'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'FelikZ/ctrlp-py-matcher'
+" vim-plug
+call plug#begin('~/.vim/plugged')
+
+Plug 'flazz/vim-colorschemes'
+Plug 'mbbill/undotree'
+Plug 'ervandew/supertab'
+
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'raghur/fruzzy', {'do': { -> fruzzy#install()}}
+
+
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Initialize plugin system
+call plug#end()
+
+"Plugin 'tpope/vim-fugitive'
+"Plugin 'Lokaltog/vim-easymotion'
+"Plugin 'mileszs/ack.vim'
 "Plugin 'Valloric/YouCompleteMe'
-Plugin 'ervandew/supertab.git'
-Plugin 'davidhalter/jedi-vim.git'
+"Plugin 'davidhalter/jedi-vim.git'
 
-Plugin 'skammer/vim-css-color'
+"Plugin 'skammer/vim-css-color'
 
 " TODO potentially remove
-Plugin 'terryma/vim-multiple-cursors'
+"Plugin 'terryma/vim-multiple-cursors'
 
 "Plugin 'Lokaltog/powerline', {'rtp':'/powerline/bindings/vim'}
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'godlygeek/csapprox'
-Plugin 'mbbill/undotree'
-Plugin 'nathanaelkane/vim-indent-guides'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'godlygeek/tabular'
-Plugin 'w0rp/ale'
+"Plugin 'godlygeek/csapprox'
+"Plugin 'nathanaelkane/vim-indent-guides'
+"Plugin 'airblade/vim-gitgutter'
+"Plugin 'scrooloose/nerdcommenter'
+"Plugin 'w0rp/ale'
 
 
 " TODO potentially use, settings below
 " Plugin 'klen/python-mode'
 
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
-Plugin 'elzr/vim-json'
-Plugin 'hail2u/vim-css3-syntax'
-Plugin 'tpope/vim-haml'
-Plugin 'slim-template/vim-slim.git'
-Plugin 'tpope/vim-rails.git'
-Plugin 'vim-ruby/vim-ruby.git'
-Plugin 'ngmy/vim-rubocop'
-Plugin 'tpope/vim-bundler.git'
-Plugin 'chase/vim-ansible-yaml'
-Plugin 'mtscout6/vim-cjsx'
+"Plugin 'pangloss/vim-javascript'
+"Plugin 'mxw/vim-jsx'
+"Plugin 'elzr/vim-json'
+"Plugin 'hail2u/vim-css3-syntax'
+"Plugin 'tpope/vim-haml'
+"Plugin 'slim-template/vim-slim.git'
+"Plugin 'tpope/vim-rails.git'
+"Plugin 'vim-ruby/vim-ruby.git'
+"Plugin 'ngmy/vim-rubocop'
+"Plugin 'tpope/vim-bundler.git'
+"Plugin 'chase/vim-ansible-yaml'
 
-" May need to use classic vim-latex-suite as this is a fork
-"Plugin 'gerw/vim-latex-suite'
-Plugin 'lervag/vimtex'
+"Plugin 'freitass/todo.txt-vim'
 
-Plugin 'freitass/todo.txt-vim'
+"Plugin 'hashivim/vim-terraform'
 
-Plugin 'hashivim/vim-terraform'
-
-call vundle#end()
 filetype plugin indent on " Automatically detect file types.
 
 set background=dark
@@ -87,9 +85,6 @@ set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatib
 
 set spell
 set spell spelllang=en
-au FileType apache set spell nospell
-au FileType conf set spell nospell
-au FileType make set spell nospell
 set dictionary=/usr/share/dict/words
 
  " http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
@@ -154,23 +149,23 @@ highlight clear SignColumn
 " in relative mode. Things like vim-gitgutter will match LineNr highlight
 highlight clear LineNr
 
-if has('cmdline_info')
-   set ruler   " Show the ruler
-   set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
-   set showcmd " Show partial commands in status line and selected characters/lines in visual mode
-endif
+"if has('cmdline_info')
+"   set ruler   " Show the ruler
+"   set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
+"   set showcmd " Show partial commands in status line and selected characters/lines in visual mode
+"endif
 
-if has('statusline')
-    set laststatus=2
-
-    " Broken down into easily includeable segments
-    set statusline=%<%f\ " Filename
-    set statusline+=%w%h%m%r " Options
-    set statusline+=%{fugitive#statusline()} " Git Hotness
-    set statusline+=\ [%{&ff}/%Y] " Filetype
-    set statusline+=\ [%{getcwd()}] " Current dir
-    set statusline+=%=%-14.(%l,%c%V%)\ %p%% " Right aligned file nav info
-endif
+"if has('statusline')
+"    set laststatus=2
+"
+"    " Broken down into easily includeable segments
+"    set statusline=%<%f\ " Filename
+"    set statusline+=%w%h%m%r " Options
+"    set statusline+=%{fugitive#statusline()} " Git Hotness
+"    set statusline+=\ [%{&ff}/%Y] " Filetype
+"    set statusline+=\ [%{getcwd()}] " Current dir
+"    set statusline+=%=%-14.(%l,%c%V%)\ %p%% " Right aligned file nav info
+"endif
 
 set backspace=indent,eol,start " Backspace for dummies
 set linespace=0                " No extra spaces between rows
@@ -219,11 +214,14 @@ au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 au FileType yaml setl sw=2 sts=2 et
 au FileType ruby setl sw=2 sts=2 et
 au FileType slim setl sw=2 sts=2 et
-au FileType coffee setl sw=2 sts=2 et
 au FileType sass setl sw=2 sts=2 et
 au FileType scss setl sw=2 sts=2 et
 au FileType javascript.jsx setl sw=2 sts=2 et
 au FileType javascript setl sw=2 sts=2 et
+
+au FileType apache set spell nospell
+au FileType conf set spell nospell
+au FileType make set spell nospell
 
 " Remove trailing whitespaces and ^M chars in programs
 function! StripTrailingWhitespace()
@@ -237,8 +235,7 @@ function! StripTrailingWhitespace()
     let @/=_s
     call cursor(l, c)
 endfunction
-"autocmd FileType c,cpp,java,go,php,ruby,javascript,python,haml,xml,yml,coffee autocmd BufWritePre <buffer> call StripTrailingWhitespace()
-autocmd BufNewFile,BufReadPost *.coffee setl shiftwidth=2 expandtab
+autocmd FileType c,cpp,java,go,php,ruby,javascript,python,haml,xml,yml autocmd BufWritePre <buffer> call StripTrailingWhitespace()
 
 let mapleader = '\'
 
@@ -324,33 +321,19 @@ map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 map zl zL
 map zh zH
 
-" Plugin-specific configuration
-
-" Tabularize
-nmap <Leader>a& :Tabularize /&<CR>
-vmap <Leader>a& :Tabularize /&<CR>
-nmap <Leader>a= :Tabularize /=<CR>
-vmap <Leader>a= :Tabularize /=<CR>
-nmap <Leader>a: :Tabularize /:<CR>
-vmap <Leader>a: :Tabularize /:<CR>
-nmap <Leader>a:: :Tabularize /:\zs<CR>
-vmap <Leader>a:: :Tabularize /:\zs<CR>
-nmap <Leader>a, :Tabularize /,<CR>
-vmap <Leader>a, :Tabularize /,<CR>
-nmap <Leader>a,, :Tabularize /,\zs<CR>
-vmap <Leader>a,, :Tabularize /,\zs<CR>
-nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
-vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
-
-" JSON: TODO figure out what this does, from spf13
 nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
+
+" Plugin-specific configuration
 
 " PyMode TODO figure out whether to use, from spf13
 " let g:pymode_lint_checker = "pyflakes"
 " let g:pymode_utils_whitespaces = 0
 " let g:pymode_options = 0
 
-" ctrlp
+" ctrlp / fruzzy
+let g:fruzzy#usenative = 1
+let g:fruzzy#sortonempty = 1
+
 let g:ctrlp_working_path_mode = 'ra'
 nnoremap <silent> <Leader>t :CtrlP<CR>
 nnoremap <silent> <Leader>y :CtrlPMRU<CR>
@@ -370,22 +353,23 @@ let g:ctrlp_user_command = {
     \ 'fallback': 'find %s -type f'
 \ }
 let g:ctrlp_follow_symlinks = 1
-let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+let g:ctrlp_match_func = {'match': 'fruzzy#ctrlp#matcher'}
+let g:ctrlp_match_current_file = 1 " to include current file in matches
 
  " Fugitive
-nnoremap <silent> <leader>gs :Gstatus<CR>
-nnoremap <silent> <leader>gd :Gdiff<CR>
-nnoremap <silent> <leader>gc :Gcommit<CR>
-nnoremap <silent> <leader>gb :Gblame<CR>
-nnoremap <silent> <leader>gl :Glog<CR>
-nnoremap <silent> <leader>gp :Git push<CR>
-nnoremap <silent> <leader>gr :Gread<CR>:GitGutter<CR>
-nnoremap <silent> <leader>gw :Gwrite<CR>:GitGutter<CR>
-nnoremap <silent> <leader>ge :Gedit<CR>
-nnoremap <silent> <leader>gg :GitGutterToggle<CR>
+"nnoremap <silent> <leader>gs :Gstatus<CR>
+"nnoremap <silent> <leader>gd :Gdiff<CR>
+"nnoremap <silent> <leader>gc :Gcommit<CR>
+"nnoremap <silent> <leader>gb :Gblame<CR>
+"nnoremap <silent> <leader>gl :Glog<CR>
+"nnoremap <silent> <leader>gp :Git push<CR>
+"nnoremap <silent> <leader>gr :Gread<CR>:GitGutter<CR>
+"nnoremap <silent> <leader>gw :Gwrite<CR>:GitGutter<CR>
+"nnoremap <silent> <leader>ge :Gedit<CR>
+"nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 
 " gitgutter
-set signcolumn=yes
+"set signcolumn=yes
 
 " UndoTree
 nnoremap <Leader>u :UndotreeToggle<CR>
@@ -393,14 +377,14 @@ nnoremap <Leader>u :UndotreeToggle<CR>
 let g:undotree_SetFocusWhenToggle=1
 
 " indent_guides
-let g:indent_guides_start_level = 2
-let g:indent_guides_guide_size = 1
-let g:indent_guides_enable_on_vim_startup = 1
+"let g:indent_guides_start_level = 2
+"let g:indent_guides_guide_size = 1
+"let g:indent_guides_enable_on_vim_startup = 1
 
 " vim-airline
 let g:airline_theme = 'murmur'
 let g:airline_enable_branch     = 1
-let g:airline#extensions#ale#enabled = 1
+"let g:airline#extensions#ale#enabled = 1
 set ttimeoutlen=50
 
 " vim-powerline symbols
@@ -441,37 +425,6 @@ else
         set t_Co=256 " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
     endif
 endif
-
-"let g:tex_flavor = 'latex'
-"let g:Tex_MultipleCompileFormat = 'pdf,aux'
-"let g:Tex_TreatMacViewerAsUNIX = 0
-"let g:Tex_DefaultTargetFormat = 'pdf'
-"let g:Tex_CompileRule_pdf = 'pdflatex -synctex=1 --interaction=nonstopmode $*'
-"let g:Tex_ViewRule_pdf = 'Skim'
-
-let g:vimtex_view_general_viewer
-        \ = '/Users/arjun/Applications/Skim.app/Contents/SharedSupport/displayline'
-let g:vimtex_view_general_options = '-r @line @pdf @tex'
-
-" This adds a callback hook that updates Skim after compilation
-let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
-function! UpdateSkim(status)
-    if !a:status | return | endif
-
-    let l:out = b:vimtex.out()
-    let l:tex = expand('%:p')
-    let l:cmd = [g:vimtex_view_general_viewer, '-r']
-    if !empty(system('pgrep Skim'))
-    call extend(l:cmd, ['-g'])
-    endif
-    if has('nvim')
-    call jobstart(l:cmd + [line('.'), l:out, l:tex])
-    elseif has('job')
-    call job_start(l:cmd + [line('.'), l:out, l:tex])
-    else
-    call system(join(l:cmd + [line('.'), shellescape(l:out), shellescape(l:tex)], ' '))
-    endif
-endfunction
 
 " Run a shell command
 function! s:RunShellCommand(cmdline)
