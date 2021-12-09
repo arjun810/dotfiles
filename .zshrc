@@ -1,5 +1,5 @@
 PLATFORM=`uname`
-export PATH=~/bin:$PATH
+export PATH=~/bin:/Users/arjun/.mix/escripts:$PATH
 
 setopt HIST_IGNORE_ALL_DUPS
 

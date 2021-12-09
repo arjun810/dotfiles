@@ -18,6 +18,8 @@ Plug 'raghur/fruzzy', {'do': { -> fruzzy#install()}}
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
+Plug 'elixir-editors/vim-elixir'
+
 " Initialize plugin system
 call plug#end()
 

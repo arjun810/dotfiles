@@ -13,6 +13,8 @@ brew 'ag'
 brew 'python3' # Other formulas depend on Homebrew's python3, like MacVim
 brew 'rust'
 
+brew 'elixir'
+
 brew 'mas'
 
 brew 'postgresql'
@@ -32,6 +34,7 @@ cask 'zoom'
 cask 'docker'
 cask 'mem'
 cask 'brave-browser'
+cask 'camo-studio'
 
 mas '1Password', id: 1333542190
 mas 'Xcode', id: 497799835

@@ -126,6 +126,14 @@ step "Install bundler" do
   gem "bundler"
 end
 
+step "Install hex" do
+  command "mix local.hex"
+end
+
+step "Install phoenix application generator" do
+  command "mix archive.install hex phx_new"
+end
+
 # .amethyst has to be done manually since it's osx specific
 # step "Link .amethyst" do
 #     command "ln -s ~/.dotfiles/osx/.amethyst ~/.amethyst"
