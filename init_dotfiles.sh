@@ -1,15 +1,17 @@
 #! /bin/bash
 
-pushd ~
-ln -s .dotfiles/.vimrc ~/.vimrc
-ln -s .dotfiles/.zshrc ~/.zshrc
-ln -s .dotfiles/.zshenv ~/.zshenv
-ln -s .dotfiles/.zshlogin ~/.zshlogin
-ln -s .dotfiles/.zimrc ~/.zimrc
-ln -s .dotfiles/.gemrc ~/.gemrc
-ln -s .dotfiles/.gitconfig ~/.gitconfig
-ln -s .dotfiles/.tool-versions ~/.tool-versions
-popd
+set -euo pipefail
 
-git submodule init
-git submodule update
+DOTDIR="${HOME}/.dotfiles"
+FILES=(.vimrc .zshrc .zshenv .zlogin .zimrc .gemrc .gitconfig .tool-versions)
+
+for file in "${FILES[@]}"; do
+  target="${HOME}/${file}"
+  src="${DOTDIR}/${file}"
+  if [ -e "$target" ] && [ ! -L "$target" ]; then
+    mv "$target" "${target}.bak.$(date +%s)"
+  fi
+  ln -sfn "$src" "$target"
+done
+
+git submodule update --init --recursive
