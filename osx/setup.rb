@@ -112,6 +112,16 @@ step "Install Homebrew bundle" do
   command "brew bundle --file ~/.dotfiles/osx/Brewfile"
 end
 
+step "Install ruby build dependencies" do
+  prefix = `brew --prefix 2>/dev/null`.strip
+  if prefix.nil? || prefix.empty?
+    prefix = File.directory?("/opt/homebrew") ? "/opt/homebrew" : "/usr/local"
+  end
+  ENV["PATH"] = "#{prefix}/bin:#{ENV["PATH"]}"
+  deps = %w[autoconf bison openssl@3 readline libyaml gmp zlib]
+  command "brew install #{deps.join(' ')}"
+end
+
 step "Install ruby" do
   plugins = `asdf plugin list 2>/dev/null`.lines.map { |l| l.strip }
   added = true
@@ -206,6 +216,28 @@ step "Install phoenix application generator" do
     note "Skipping Phoenix installer because mix is not available."
     true
   end
+end
+
+step "Install pipx" do
+  prefix = `brew --prefix 2>/dev/null`.strip
+  if prefix.nil? || prefix.empty?
+    prefix = File.directory?("/opt/homebrew") ? "/opt/homebrew" : "/usr/local"
+  end
+  ENV["PATH"] = "#{prefix}/bin:#{ENV["PATH"]}"
+  ok = command "brew install pipx"
+  ok = ok && command "pipx ensurepath"
+  ok
+end
+
+step "Install Nerd Font via Homebrew cask" do
+  prefix = `brew --prefix 2>/dev/null`.strip
+  if prefix.nil? || prefix.empty?
+    prefix = File.directory?("/opt/homebrew") ? "/opt/homebrew" : "/usr/local"
+  end
+  ENV["PATH"] = "#{prefix}/bin:#{ENV["PATH"]}"
+  ok = command "brew tap homebrew/cask-fonts"
+  ok = ok && command "brew install --cask font-meslo-lg-nerd-font"
+  ok
 end
 
 # .amethyst has to be done manually since it's osx specific
