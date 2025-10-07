@@ -143,3 +143,5 @@ function textme() {
 source ~/.secrets.env
 
 . /opt/homebrew/opt/asdf/asdf.sh
+
+[ -f ~/.zshrc.local ] && . ~/.zshrc.local
