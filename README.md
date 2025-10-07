@@ -31,6 +31,13 @@ Per-host configuration
 - Add ~/.zshrc.local for host-specific shell settings
 - Git can include ~/.gitconfig.work via includeIf
 
+Dotfile managers (optional)
+- For selective deployment or managing across multiple machines consider:
+  - GNU Stow: create directories per app and stow them into $HOME
+  - yadm: git-based dotfile manager with templating and bootstrap hooks
+  - chezmoi: cross-platform manager with encryption support and templates
+- This repo currently uses simple symlinks via init_dotfiles.sh; you can migrate gradually by structuring files for stow or adopting chezmoi/yadm.
+
 Uninstall/cleanup (manual for now)
 - Remove symlinks in $HOME
 - Restore backups with .bak.TIMESTAMP suffix created by init_dotfiles.sh
