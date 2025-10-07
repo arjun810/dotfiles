@@ -254,3 +254,5 @@ end
 $notes.each do |note|
     puts note
 end
+
+puts "Setup complete. Review the notes above for any manual actions."
