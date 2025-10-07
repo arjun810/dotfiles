@@ -15,3 +15,6 @@ email = arjun810@gmail.com
 	default = current
 [alias]
 	serve = daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/
+
+[includeIf "gitdir:~/work/"]
+	path = ~/.gitconfig.work

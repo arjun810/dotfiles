@@ -9,6 +9,21 @@ end
 
 $notes = []
 
+# Keep sudo alive for the duration of the setup
+begin
+  if system('command -v sudo >/dev/null 2>&1')
+    system 'sudo -v'
+    Thread.new do
+      loop do
+        system 'sudo -n true'
+        sleep 60
+      end
+    end
+  end
+rescue
+  # ignore
+end
+
 def step(name)
     if $completed.include? name
         puts "Step '#{name}' already done; skipping."
@@ -47,13 +62,13 @@ end
 
 def pip(packages, opts={})
     packages = [packages].flatten
-    command = "pip3 install #{packages.join(" ")}"
+    command = "python3 -m pip install #{packages.join(" ")}"
     system command
 end
 
 def gem(packages, opts={})
     packages = [packages].flatten
-    command = "`asdf which gem` install #{packages.join(" ")}"
+    command = "asdf exec gem install #{packages.join(" ")}"
     system command
 end
 
@@ -64,30 +79,67 @@ def prompt(message)
 end
 
 step "Install homebrew" do
+    ENV["NONINTERACTIVE"] = "1"
     command "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
 end
 
-step "Prompt for ssh keys" do
-    prompt "Ensure your ssh keys are set up."
-    File.exists? File.expand_path("~/.ssh")
+step "Check ssh keys" do
+    ssh_dir = File.expand_path("~/.ssh")
+    have_dir = File.exist?(ssh_dir)
+    have_key = ["id_ed25519.pub", "id_rsa.pub"].any? { |k| File.exist?(File.join(ssh_dir, k)) }
+    unless have_dir && have_key
+      note "SSH keys not found. Generate one with: ssh-keygen -t ed25519 -C \"your_email@example.com\""
+    end
+    true
 end
 
 step "Install dotfiles" do
-    clone "git@github.com:arjun810/dotfiles", "~/.dotfiles"
+    dest = File.expand_path("~/.dotfiles")
+    if File.exist?(dest)
+      puts "~/.dotfiles already exists; skipping clone."
+      true
+    else
+      clone "git@github.com:arjun810/dotfiles", dest
+    end
 end
 
 step "Install Homebrew bundle" do
+  prefix = `brew --prefix 2>/dev/null`.strip
+  if prefix.nil? || prefix.empty?
+    prefix = File.directory?("/opt/homebrew") ? "/opt/homebrew" : "/usr/local"
+  end
+  ENV["PATH"] = "#{prefix}/bin:#{ENV["PATH"]}"
   command "brew bundle --file ~/.dotfiles/osx/Brewfile"
 end
 
-step "Install ruby" do
-  command "asdf plugin add ruby"
-  command "asdf install ruby latest"
+step "Install ruby build dependencies" do
+  prefix = `brew --prefix 2>/dev/null`.strip
+  if prefix.nil? || prefix.empty?
+    prefix = File.directory?("/opt/homebrew") ? "/opt/homebrew" : "/usr/local"
+  end
+  ENV["PATH"] = "#{prefix}/bin:#{ENV["PATH"]}"
+  deps = %w[autoconf bison openssl@3 readline libyaml gmp zlib]
+  command "brew install #{deps.join(' ')}"
 end
 
-step "Prompt for vim-plug" do
-    prompt "Ensure you've installed vim-plug."
-    File.exists? File.expand_path("~/.vim/autoload/plug.vim")
+step "Install ruby" do
+  plugins = `asdf plugin list 2>/dev/null`.lines.map { |l| l.strip }
+  added = true
+  unless plugins.include?("ruby")
+    added = command "asdf plugin add ruby"
+  end
+  installed = command "asdf install ruby latest"
+  set_global = command "asdf global ruby latest"
+  added && installed && set_global
+end
+
+step "Install vim-plug" do
+    plug_path = File.expand_path("~/.vim/autoload/plug.vim")
+    if File.exist?(plug_path)
+      true
+    else
+      command 'curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    end
 end
 
 step "Init dotfiles" do
@@ -99,27 +151,49 @@ step "Install vim plugins" do
 end
 
 step "Add zsh to system shells" do
-    command "echo /opt/homebrew/bin/zsh | sudo tee -a /etc/shells"
+    shells_file = "/etc/shells"
+    prefix = `brew --prefix 2>/dev/null`.strip
+    if prefix.nil? || prefix.empty?
+      prefix = File.directory?("/opt/homebrew") ? "/opt/homebrew" : "/usr/local"
+    end
+    zsh_path = File.join(prefix, "bin", "zsh")
+    lines = File.readlines(shells_file).map { |l| l.strip }
+    if lines.include?(zsh_path)
+      true
+    else
+      command "echo #{zsh_path} | sudo tee -a #{shells_file}"
+    end
 end
 
 step "Change shell to zsh" do
-    command "chsh -s /opt/homebrew/bin/zsh"
+    current = ENV["SHELL"]
+    prefix = `brew --prefix 2>/dev/null`.strip
+    if prefix.nil? || prefix.empty?
+      prefix = File.directory?("/opt/homebrew") ? "/opt/homebrew" : "/usr/local"
+    end
+    target = File.join(prefix, "bin", "zsh")
+    if current == target
+      true
+    else
+      command "chsh -s #{target}"
+    end
 end
 
 step "Install Monaco" do
-    note "You should remember to change your terminal font to Monaco for Powerline."
-    prompt "A prompt will pop up so you can install Monaco. Make sure to hit 'Install Font.'"
+    note "Change your terminal font to Monaco for Powerline (installed in ~/.dotfiles/osx)."
     command 'open ~/.dotfiles/osx/"Monaco for Powerline.otf"'
 end
 
 step "Install iTerm2 colorschemes and fonts." do
-    prompt "Don't forget to add the iTerm colorschemes. They're in ~/.dotfiles/osx."
-    prompt "Don't forget to set up iTerm's fonts and update it so Powerline works."
+    note "Import iTerm2 color schemes from ~/.dotfiles/osx and set Powerline-compatible fonts."
+    true
 end
 
 step "Install zim" do
-  command "mkdir ~/.zim"
-  command "wget https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh -O ~/.zim/zimfw.zsh"
+  ok = command "mkdir -p ~/.zim"
+  ok = ok && command "wget https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh -O ~/.zim/zimfw.zsh"
+  ok = ok && command "zsh -i -c \"~/.zim/zimfw.zsh install\""
+  ok
 end
 
 step "Install bundler" do
@@ -127,11 +201,43 @@ step "Install bundler" do
 end
 
 step "Install hex" do
-  command "mix local.hex"
+  if system('mix --version >/dev/null 2>&1')
+    command "mix local.hex --force"
+  else
+    note "Elixir/mix not found; install Elixir/Erlang via Homebrew or asdf before running mix commands."
+    true
+  end
 end
 
 step "Install phoenix application generator" do
-  command "mix archive.install hex phx_new"
+  if system('mix --version >/dev/null 2>&1')
+    command "mix archive.install hex phx_new --force"
+  else
+    note "Skipping Phoenix installer because mix is not available."
+    true
+  end
+end
+
+step "Install pipx" do
+  prefix = `brew --prefix 2>/dev/null`.strip
+  if prefix.nil? || prefix.empty?
+    prefix = File.directory?("/opt/homebrew") ? "/opt/homebrew" : "/usr/local"
+  end
+  ENV["PATH"] = "#{prefix}/bin:#{ENV["PATH"]}"
+  ok = command "brew install pipx"
+  ok = ok && command "pipx ensurepath"
+  ok
+end
+
+step "Install Nerd Font via Homebrew cask" do
+  prefix = `brew --prefix 2>/dev/null`.strip
+  if prefix.nil? || prefix.empty?
+    prefix = File.directory?("/opt/homebrew") ? "/opt/homebrew" : "/usr/local"
+  end
+  ENV["PATH"] = "#{prefix}/bin:#{ENV["PATH"]}"
+  ok = command "brew tap homebrew/cask-fonts"
+  ok = ok && command "brew install --cask font-meslo-lg-nerd-font"
+  ok
 end
 
 # .amethyst has to be done manually since it's osx specific
@@ -148,3 +254,5 @@ end
 $notes.each do |note|
     puts note
 end
+
+puts "Setup complete. Review the notes above for any manual actions."
